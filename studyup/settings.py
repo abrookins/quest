@@ -31,9 +31,12 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'studyup',
     'goals.apps.GoalsConfig',
-#    'recommendations.apps.RecommendationsConfig',
-#    'search.apps.SearchConfig'
+    #    'recommendations.apps.RecommendationsConfig',
+    #    'search.apps.SearchConfig'
+    #
+    'bulma',
 
     'django.contrib.admin',
     'django.contrib.auth',
