@@ -13,15 +13,15 @@ class TestGoal(TestCase):
             settings.BASE_DIR, "static", "img", "test", "gallery01.jpg")
         self.test_file = File(open(test_file_path, 'rb'))
 
-    def test_has_title(self):
-        """A Goal should have a title"""
-        goal = Goal(title="The title")
-        expected = "The title"
-        assert expected == goal.title
+    def test_has_name(self):
+        """A Goal should have a name"""
+        goal = Goal(name="The name")
+        expected = "The name"
+        assert expected == goal.name
 
     def test_required_fields(self):
         """A Goal's required fields should raise an error if missing"""
-        goal = Goal(title="The title", description="The description",
+        goal = Goal(name="The name", description="The description",
                     image=self.test_file, slug="the-slug",)
         expected = None
         assert expected == goal.clean_fields()
@@ -34,7 +34,7 @@ class TestGoal(TestCase):
 
     def test_has_image(self):
         """A Goal should have an image"""
-        goal = Goal.objects.create(title="The title", description="The description",
+        goal = Goal.objects.create(name="The name", description="The description",
                                    image=self.test_file)
         assert "gallery01" in goal.image.file.name
 
@@ -46,9 +46,3 @@ class TestGoal(TestCase):
         goal = Goal(slug="the-slug")
         expected = "the-slug"
         assert expected == goal.slug
-
-    def test_is_coercible_to_string(self):
-        """A Goal should be coercible to string"""
-        goal = Goal(title="The goal")
-        expected = u"Goal: The goal"
-        assert expected == str(goal)

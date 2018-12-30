@@ -1,4 +1,4 @@
-from django.views.generic import ListView
+from django.views.generic import ListView, CreateView
 
 from goals.models import Goal
 
@@ -9,3 +9,11 @@ class GoalList(ListView):
     template_name = "goals/goal_list.html"
     context_object_name = "goals"
 
+
+class GoalCreate(CreateView):
+    """Display a Goal creation form"""
+    model = Goal
+    fields = ('name',)
+    template_name = "goals/goal_create.html"
+    context_object_name = "goals"
+    success_url = "/goals"

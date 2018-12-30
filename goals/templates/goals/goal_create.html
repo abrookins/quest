@@ -1,0 +1,23 @@
+{% extends 'studyup/base.html' %}
+{% load bulma_tags %}
+
+{% block title %}Add Learning Goal{% endblock %}
+
+{% block content %}
+  <div class="container">
+    <h1 class="title">
+      Add a Learning Goal
+    </h1>
+
+    <section class="section">
+      <form method="post">
+        {% csrf_token %}
+        {{ form|bulma }}
+        <div class="field">
+          <button type="submit" class="button is-primary">Create</button>
+        </div>
+        <input type="hidden" name="next" value="{{ next }}"/>
+      </form>
+    </section>
+  </div>
+{% endblock %}

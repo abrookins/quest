@@ -3,20 +3,68 @@
 {% block title %}Learning Goals{% endblock %}
 
 {% block content %}
-    <div class="container">
+  <div class="container">
+    {% if object_list.exists %}
+      <div class="level">
+        <div class="level-left">
+          <div class="level-item">
+            <h1 class="title">Learning Goals</h1>
+          </div>
+        </div>
+
+        <!-- Right side -->
+        <div class="level-right">
+          <a href="" class="button is-primary">Add learning goal</a>
+        </div>
+      </div>
+
+      <section class="section learning-goals">
+        {% for learning_goal in object_list %}
+          <div class="learning-goal row-card card">
+            <div class="card-header">
+              <p class="card-header-title">
+                <a href="">{{ learning_goal.name|truncatewords:"15" }}</a>
+              </p>
+              <p class="card-header-icon">
+                <a href="" data-method="delete" data-confirm='Delete this goal?'>
+                  <i class="fa fa-trash-o goal-button"></i>
+                </a>
+                <a href="">
+                  <i class="fa fa-pencil goal-button"></i>
+                </a>
+              </p>
+            </div>
+            <div class="card-content">
+              <article class="content">
+                {% if learning_goal.description %}
+                  <p>{{ learning_goal.description|truncatewords:"50" }}</p>
+                {% endif %}
+              </article>
+            </div>
+            <div class="">
+              <progress class="progress is-primary" value="{{ learning_goal.percentage_complete }}"
+                        max="100">
+                {% if learning_goal.percentage_complete == 100 %}
+                  <span class="sr-only">{{ learning_goal.percentage_complete }} Done!</span>
+                {% else %}
+                  <span
+                      class="sr-only">{{ learning_goal.percentage_complete }} % Complete (success)</span>
+                {% endif %}
+              </progress>
+            </div>
+          </div>
+        {% endfor %}
+      </section>
+    {% else %}
       <h1 class="title">
         Learning Goals
       </h1>
-      <p class="subtitle">
-        My first website with <strong>Django-Bulma</strong>!
-      </p>
-      <div class="content">
-        <h2 class="subtitle">Demo pages:</h2>
-        <ul>
-          <li>Thing</li>
-{#          <li><a href="{% url 'showcase:paginated_list' %}">Paginated list</a></li>#}
-{#          <li><a href="{% url 'showcase:form' %}">Form fields</a></li>#}
-        </ul>
-      </div>
-    </div>
+      <section class="section">
+        <h2 class="subtitle">No learning goals yet!</h2>
+        <p>
+          <a href="" class="button is-primary">Create a new learning goal.</a>
+        </p>
+      </section>
+    {% endif %}
+  </div>
 {% endblock content %}
