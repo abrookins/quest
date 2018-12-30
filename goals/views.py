@@ -1,19 +1,8 @@
-from django.views.generic import ListView, CreateView
-
+from rest_framework import generics
 from goals.models import Goal
+from goals.serializers import GoalSerializer
 
 
-class GoalList(ListView):
-    """Display a list of Goals"""
-    model = Goal
-    template_name = "goals/goal_list.html"
-    context_object_name = "goals"
-
-
-class GoalCreate(CreateView):
-    """Display a Goal creation form"""
-    model = Goal
-    fields = ('name',)
-    template_name = "goals/goal_create.html"
-    context_object_name = "goals"
-    success_url = "/goals"
+class GoalListCreate(generics.ListCreateAPIView):
+    queryset = Goal.objects.all()
+    serializer_class = GoalSerializer
