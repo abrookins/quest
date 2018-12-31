@@ -31,19 +31,17 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
-    'studyup',
-    'goals.apps.GoalsConfig',
-    #    'recommendations.apps.RecommendationsConfig',
-    #    'search.apps.SearchConfig'
-    #
-    'bulma',
-
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
+    'studyup',
+    'goals.apps.GoalsConfig',
+    'bulma',
+    'rest_framework'
 ]
 
 MIDDLEWARE = [
