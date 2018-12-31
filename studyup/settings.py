@@ -38,10 +38,12 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
+    'rest_framework',
+    'bulma',
+
     'studyup',
     'goals.apps.GoalsConfig',
-    'bulma',
-    'rest_framework'
+    'frontend.apps.FrontendConfig',
 ]
 
 MIDDLEWARE = [
