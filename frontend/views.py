@@ -1,5 +1,5 @@
 from django.shortcuts import render
 
 
-def index(request):
-    return render(request, 'frontend/index.html')
+def goals_list(request):
+    return render(request, 'frontend/goals_list.html')

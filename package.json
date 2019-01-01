@@ -26,7 +26,10 @@
     "webpack-cli": "^3.1.2"
   },
   "scripts": {
-    "dev": "webpack --watch --mode development ./frontend/src/index.js --output ./frontend/static/frontend/main.js",
-    "build": "webpack --mode production ./frontend/src/index.js --output ./frontend/static/frontend/main.js"
+    "build": "webpack --config webpack.config.js --progress --colors --mode development",
+    "watch": "webpack --config webpack.config.js --watch --mode development"
+  },
+  "dependencies": {
+    "ellipsize": "^0.1.0"
   }
 }

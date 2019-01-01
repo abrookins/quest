@@ -1,4 +1,13 @@
+const path = require("path");
+
 module.exports = {
+  entry: {
+    goals_list: "./frontend/src/goals_list.js"
+  },
+  output: {
+    path: path.resolve('./frontend/static/frontend/'),
+    filename: "[name].bundle.js",
+  },
   module: {
     rules: [
       {

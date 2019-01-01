@@ -1,0 +1,1 @@
+import GoalsListPage from "./components/GoalsListPage";
