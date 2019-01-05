@@ -2,6 +2,7 @@ import React from "react";
 import ReactDOM from "react-dom";
 import DataProvider from "./DataProvider";
 import GoalsList from "./GoalsList";
+import "../css/application.scss";
 
 
 const GoalsListPage = () => (

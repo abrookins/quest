@@ -1,0 +1,21 @@
+// Place all the styles related to the LearningGoals controller here.
+// They will automatically be included in application.css.
+// You can use Sass (SCSS) here: http://sass-lang.com/
+
+.learning-goals {
+  overflow: auto;
+}
+
+.goal-button {
+  float: right;
+  margin-left: 5px;
+  cursor: pointer;
+}
+
+.panel-heading {
+  overflow: hidden;
+}
+
+h4 {
+  overflow: hidden;
+}

@@ -3,6 +3,11 @@ from goals.models import Goal
 from goals.serializers import GoalSerializer
 
 
-class GoalListCreate(generics.ListCreateAPIView):
+class GoalListCreateView(generics.ListCreateAPIView):
+    queryset = Goal.objects.all()
+    serializer_class = GoalSerializer
+
+
+class GoalView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Goal.objects.all()
     serializer_class = GoalSerializer
