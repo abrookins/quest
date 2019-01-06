@@ -2,7 +2,8 @@ const path = require("path");
 
 module.exports = {
   entry: {
-    goals_list: "./frontend/src/goals_list.js"
+    goals_list: "./frontend/src/goals_list.js",
+    goal: "./frontend/src/goal.js"
   },
   output: {
     path: path.resolve('./frontend/static/frontend/'),

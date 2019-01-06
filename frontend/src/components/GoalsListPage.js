@@ -6,7 +6,7 @@ import "../css/application.scss";
 
 
 const GoalsListPage = () => (
-  <DataProvider endpoint="api/goal/"
+  <DataProvider endpoint="/api/goal/"
                 render={data => <GoalsList data={data}/>}/>
 );
 

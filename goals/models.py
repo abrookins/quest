@@ -2,7 +2,7 @@ from django.db import models
 
 
 class Task(models.Model):
-    goal = models.ForeignKey('Goal', on_delete=models.CASCADE)
+    goal = models.ForeignKey('Goal', on_delete=models.CASCADE, related_name='tasks')
     name = models.CharField(help_text="The name of the goal", max_length=255)
     url = models.URLField(help_text="The URL of this task")
     completed = models.BooleanField(help_text="Whether or not this task is complete",
@@ -25,7 +25,7 @@ class Goal(models.Model):
         return "Goal: {}".format(self.name)
 
     def percentage_complete(self):
-        completed = self.task_set.filter(completed=True).count()
+        completed = self.tasks.filter(completed=True).count()
         if completed == 0:
             return 0
-        return (completed / self.task_set.count()) * 100
+        return (completed / self.tasks.count()) * 100

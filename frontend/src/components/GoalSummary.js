@@ -5,7 +5,7 @@ const GoalSummary = (props) =>
   <div className="learning-goal row-card card">
     <div className="card-header">
       <p className="card-header-title">
-        <a href="">{props.goal.name}</a>
+        <a href={`/goal/${props.goal.id}`}>{props.goal.name}</a>
       </p>
       <p className="card-header-icon">
         <i className="fa fa-trash-o goal-button" onClick={() => props.deleteFn(props.goal.id)}/>

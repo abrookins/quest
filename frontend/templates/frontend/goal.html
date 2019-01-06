@@ -1,0 +1,14 @@
+{% extends 'studyup/base.html' %}
+{% load static %}
+
+<!--How to get the goal name in the title?-->
+{% block title %}Learning Goals{% endblock %}
+
+{% block content %}
+  <div id="goal-id" data-id="{{ goal_id }}"></div>
+  <div id="goal"><!-- React --></div>
+{% endblock content %}
+
+{% block extra_javascript %}
+  <script src="{% static "frontend/goal.bundle.js" %}"></script>
+{% endblock extra_javascript %}
