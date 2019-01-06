@@ -36,11 +36,13 @@ class GoalsList extends React.Component {
         </p>
       </div>
     ) : (
-      <div className="learning-goals">
+      <div>
         <h1 className="title">Learning Goals</h1>
-        {this.state.goals.map(
-          goal => <GoalSummary goal={goal} deleteFn={this.handleDelete} key={key(goal)}/>
-        )}
+        <div className="learning-goals">
+          {this.state.goals.map(
+            goal => <GoalSummary goal={goal} deleteFn={this.handleDelete} key={key(goal)}/>
+          )}
+        </div>
       </div>
     );
   }

@@ -161,6 +161,7 @@ class GoalDetail extends React.Component {
     return (
       <div>
         <header className="header">
+          <h1 className="title">{this.props.goal.name}</h1>
           <input
             className="new-task"
             placeholder="What needs to be done?"

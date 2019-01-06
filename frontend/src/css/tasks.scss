@@ -4,7 +4,7 @@
 
 #goal {
     background: #fff;
-    margin: 0 0 40px 0;
+    margin: 100px 0 40px 0;
     position: relative;
     box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2),
     0 25px 50px 0 white;
@@ -28,10 +28,10 @@
     color: #e6e6e6;
 }
 
-//#goal h1 {
-//    position: absolute;
-//    top: -155px;
-//    width: 100%;
+#goal h1 {
+    position: absolute;
+    top: -100px;
+    width: 100%;
     //font-size: 100px;
     //font-weight: 100;
     //text-align: center;
@@ -39,7 +39,7 @@
     //-webkit-text-rendering: optimizeLegibility;
     //-moz-text-rendering: optimizeLegibility;
     //text-rendering: optimizeLegibility;
-//}
+}
 
 .new-task,
 .edit {

@@ -10,6 +10,11 @@ class Task extends React.Component {
   constructor(props) {
     super(props);
     this.state = {editText: this.props.task.title};
+
+    this.handleSubmit = this.handleSubmit.bind(this);
+    this.handleEdit = this.handleEdit.bind(this);
+    this.handleKeyDown = this.handleKeyDown.bind(this);
+    this.handleChange = this.handleChange.bind(this);
   }
 
   handleSubmit(event) {
@@ -40,29 +45,6 @@ class Task extends React.Component {
   handleChange(event) {
     if (this.props.editing) {
       this.setState({editText: event.target.value});
-    }
-  }
-
-  // Performance speedup.
-  shouldComponentUpdate(nextProps, nextState) {
-    return (
-      nextProps.task !== this.props.task ||
-      nextProps.editing !== this.props.editing ||
-      nextState.editText !== this.state.editText
-    );
-  }
-
-  /**
-   * Safely manipulate the DOM after updating the state when invoking
-   * `this.props.onEdit()` in the `handleEdit` method above.
-   * For more info refer to notes at https://facebook.github.io/react/docs/component-api.html#setstate
-   * and https://facebook.github.io/react/docs/component-specs.html#updating-componentdidupdate
-   */
-  componentDidUpdate(prevProps) {
-    if (!prevProps.editing && this.props.editing) {
-      const node = React.findDOMNode(this.refs.editField)
-      node.focus();
-      node.setSelectionRange(node.value.length, node.value.length);
     }
   }
 
