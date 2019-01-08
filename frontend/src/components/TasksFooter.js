@@ -22,7 +22,7 @@ class TasksFooter extends React.Component {
       );
     }
 
-    const nowShowing = this.props.nowShowing
+    const mode = this.props.mode
     return (
       <footer className="footer">
 					<span className="task-count">
@@ -32,7 +32,7 @@ class TasksFooter extends React.Component {
           <li>
             <a
               href="#/"
-              className={classNames({selected: nowShowing === ALL})}>
+              className={classNames({selected: mode === ALL})}>
               All
             </a>
           </li>
@@ -40,7 +40,7 @@ class TasksFooter extends React.Component {
           <li>
             <a
               href="#/active"
-              className={classNames({selected: nowShowing === ACTIVE})}>
+              className={classNames({selected: mode === ACTIVE})}>
               Active
             </a>
           </li>
@@ -48,7 +48,7 @@ class TasksFooter extends React.Component {
           <li>
             <a
               href="#/completed"
-              className={classNames({selected: nowShowing === COMPLETED})}>
+              className={classNames({selected: mode === COMPLETED})}>
               Completed
             </a>
           </li>

@@ -84,7 +84,7 @@ Task.propTypes = {
   onSave: PropTypes.func.isRequired,
   onDestroy: PropTypes.func.isRequired,
   onEdit: PropTypes.func.isRequired,
-  onCancel: PropTypes.func.isRequired,
+  onCancel: PropTypesfunc.isRequired,
   onToggle: PropTypes.func.isRequired,
   editing: PropTypes.bool.isRequired,
 }

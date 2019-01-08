@@ -164,7 +164,7 @@ class GoalDetail extends React.Component {
           <h1 className="title">{this.props.goal.name}</h1>
           <input
             className="new-task"
-            placeholder="What needs to be done?"
+            placeholder="Add a new task for this goal"
             value={this.state.newTask}
             onKeyDown={this.handleNewTaskKeyDown}
             onChange={this.handleChange}

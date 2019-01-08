@@ -1,11 +1,6 @@
 
 import Utils from "./Utils";
 
-// Generic "model" object. You can use whatever
-// framework you want. For this application it
-// may not even be worth separating this logic
-// out, but we do this to demonstrate one way to
-// separate out parts of your application.
 const TaskModel = function (key) {
   this.key = key;
   this.tasks = Utils.store(key);
@@ -34,10 +29,6 @@ TaskModel.prototype.addTask = function (title) {
 };
 
 TaskModel.prototype.toggleAll = function (checked) {
-  // Note: it's usually better to use immutable data structures since they're
-  // easier to reason about and React works very well with them. That's why
-  // we use map() and filter() everywhere instead of mutating the array or
-  // task items themselves.
   this.tasks = this.tasks.map(function (task) {
     return Utils.extend({}, task, {completed: checked});
   });
