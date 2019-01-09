@@ -1,6 +1,11 @@
 from rest_framework import generics
-from goals.models import Goal
-from goals.serializers import GoalSerializer
+from goals.models import Goal, Task
+from goals.serializers import GoalSerializer, TaskSerializer
+
+
+class TaskView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Task.objects.all()
+    serializer_class = TaskSerializer
 
 
 class GoalListCreateView(generics.ListCreateAPIView):

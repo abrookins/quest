@@ -6,7 +6,8 @@ import TaskModel from "./TaskModel";
 import "../css/application.scss";
 import "../css/tasks.scss";
 
-let model = new TaskModel('tasks');
+// Should we give it the goal ID? How and when?
+let model = new TaskModel();
 
 const GoalDetailPage = (props) => (
   <DataProvider endpoint={`/api/goal/${props.goalId}`}

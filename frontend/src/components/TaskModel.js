@@ -1,7 +1,9 @@
 
 import Utils from "./Utils";
 
-const TaskModel = function (key) {
+const TaskUrl = "/api/task";
+
+const TaskModel = function (goalId) {
   this.key = key;
   this.tasks = Utils.store(key);
   this.onChanges = [];
