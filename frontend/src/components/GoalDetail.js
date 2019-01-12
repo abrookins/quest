@@ -1,94 +1,92 @@
-import React from "react";
-import PropTypes from "prop-types";
-import {Router} from "director/build/director";
-import TasksFooter from './TasksFooter';
-import Task from './Task';
+import React from 'react'
+import PropTypes from 'prop-types'
+import { Router } from 'director/build/director'
+import TasksFooter from './TasksFooter'
+import Task from './Task'
 
-const ALL = 'all';
-const ACTIVE = 'active';
-const COMPLETED = 'completed';
-const ENTER_KEY = 13;
-
+const ALL = 'all'
+const ACTIVE = 'active'
+const COMPLETED = 'completed'
+const ENTER_KEY = 13
 
 class GoalDetail extends React.Component {
-  constructor(props) {
-    super(props);
+  constructor (props) {
+    super(props)
     this.state = {
       mode: ALL,
       editing: null,
       newTask: ''
-    };
-
-    this.handleChange = this.handleChange.bind(this);
-    this.handleNewTaskKeyDown = this.handleNewTaskKeyDown.bind(this);
-    this.toggleAll = this.toggleAll.bind(this);
-    this.toggle = this.toggle.bind(this);
-    this.destroy = this.destroy.bind(this);
-    this.destroy = this.destroy.bind(this);
-    this.edit = this.edit.bind(this);
-    this.save = this.save.bind(this);
-    this.cancel = this.cancel.bind(this);
-    this.clearCompleted = this.clearCompleted.bind(this);
-  }
-
-  componentDidMount() {
-    const setState = this.setState;
-    let router = Router({
-      '/': setState.bind(this, {mode: ALL}),
-      '/active': setState.bind(this, {mode: ACTIVE}),
-      '/completed': setState.bind(this, {mode: COMPLETED})
-    });
-    router.init('/');
-  }
-
-
-  handleChange(event) {
-    this.setState({newTask: event.target.value});
-  }
-
-  handleNewTaskKeyDown(event) {
-    if (event.keyCode !== ENTER_KEY) {
-      return;
     }
 
-    event.preventDefault();
+    this.handleChange = this.handleChange.bind(this)
+    this.handleNewTaskKeyDown = this.handleNewTaskKeyDown.bind(this)
+    this.toggleAll = this.toggleAll.bind(this)
+    this.toggle = this.toggle.bind(this)
+    this.destroy = this.destroy.bind(this)
+    this.destroy = this.destroy.bind(this)
+    this.edit = this.edit.bind(this)
+    this.save = this.save.bind(this)
+    this.cancel = this.cancel.bind(this)
+    this.clearCompleted = this.clearCompleted.bind(this)
+  }
+
+  componentDidMount () {
+    const setState = this.setState
+    let router = Router({
+      '/': setState.bind(this, { mode: ALL }),
+      '/active': setState.bind(this, { mode: ACTIVE }),
+      '/completed': setState.bind(this, { mode: COMPLETED })
+    })
+    router.init('/')
+  }
+
+  handleChange (event) {
+    this.setState({ newTask: event.target.value })
+  }
+
+  handleNewTaskKeyDown (event) {
+    if (event.keyCode !== ENTER_KEY) {
+      return
+    }
+
+    event.preventDefault()
 
     const val = this.state.newTask.trim()
 
     if (val) {
-      this.props.model.addTask(val);
-      this.setState({newTask: ''});
+      this.props.model.addTask(val)
+      this.setState({ newTask: '' })
     }
   }
 
-  toggleAll(event) {
+  toggleAll (event) {
     const checked = event.target.checked
-    this.props.model.toggleAll(checked);
+    this.props.model.toggleAll(checked)
   }
 
-  toggle(taskToToggle) {
-    this.props.model.toggle(taskToToggle);
+  toggle (taskToToggle) {
+    this.props.model.toggle(taskToToggle)
   }
 
-  destroy(task) {
-    this.props.model.destroy(task);
+  destroy (task) {
+    this.props.model.destroy(task)
   }
 
-  edit(task) {
-    this.setState({editing: task.id});
+  edit (task) {
+    this.setState({ editing: task.id })
   }
 
   save(taskToSave, text) {
-    this.props.model.save(taskToSave, text);
-    this.setState({editing: null});
+    this.props.model.save(taskToSave, text)
+    this.setState({editing: null})
   }
 
   cancel() {
-    this.setState({editing: null});
+    this.setState({editing: null})
   }
 
   clearCompleted() {
-    this.props.model.clearCompleted();
+    this.props.model.clearCompleted()
   }
 
   render() {
@@ -99,11 +97,11 @@ class GoalDetail extends React.Component {
     const shownTasks = tasks.filter(function (task) {
       switch (this.state.mode) {
         case ACTIVE:
-          return !task.completed;
+          return !task.completed
         case COMPLETED:
-          return task.completed;
+          return task.completed
         default:
-          return true;
+          return true
       }
     }, this)
 
@@ -119,14 +117,14 @@ class GoalDetail extends React.Component {
           onSave={this.save.bind(this, task)}
           onCancel={this.cancel}
         />
-      );
-    }, this);
+      )
+    }, this)
 
     const activeTaskCount = tasks.reduce(function (accum, task) {
-      return task.completed ? accum : accum + 1;
-    }, 0);
+      return task.completed ? accum : accum + 1
+    }, 0)
 
-    const completedCount = tasks.length - activeTaskCount;
+    const completedCount = tasks.length - activeTaskCount
 
     if (activeTaskCount || completedCount) {
       footer =
@@ -135,7 +133,7 @@ class GoalDetail extends React.Component {
           completedCount={completedCount}
           mode={this.state.mode}
           onClearCompleted={this.clearCompleted}
-        />;
+        />
     }
 
     if (tasks.length) {
@@ -155,7 +153,7 @@ class GoalDetail extends React.Component {
             {taskItems}
           </ul>
         </section>
-      );
+      )
     }
 
     return (
@@ -174,12 +172,12 @@ class GoalDetail extends React.Component {
         {main}
         {footer}
       </div>
-    );
+    )
   }
 }
 
 GoalDetail.propTypes = {
   goal: PropTypes.object.isRequired
-};
+}
 
-export default GoalDetail;
+export default GoalDetail

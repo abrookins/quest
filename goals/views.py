@@ -3,6 +3,11 @@ from goals.models import Goal, Task
 from goals.serializers import GoalSerializer, TaskSerializer
 
 
+class TaskListCreateView(generics.ListCreateAPIView):
+    queryset = Task.objects.all()
+    serializer_class = TaskSerializer
+
+
 class TaskView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Task.objects.all()
     serializer_class = TaskSerializer
