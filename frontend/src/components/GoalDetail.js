@@ -54,7 +54,7 @@ class GoalDetail extends React.Component {
     const val = this.state.newTask.trim()
 
     if (val) {
-      this.props.model.addTask(val)
+      this.props.model.add(val)
       this.setState({ newTask: '' })
     }
   }
@@ -76,20 +76,20 @@ class GoalDetail extends React.Component {
     this.setState({ editing: task.id })
   }
 
-  save(taskToSave, text) {
+  save (taskToSave, text) {
     this.props.model.save(taskToSave, text)
-    this.setState({editing: null})
+    this.setState({ editing: null })
   }
 
-  cancel() {
-    this.setState({editing: null})
+  cancel () {
+    this.setState({ editing: null })
   }
 
-  clearCompleted() {
+  clearCompleted () {
     this.props.model.clearCompleted()
   }
 
-  render() {
+  render () {
     let footer
     let main
     const tasks = this.props.model.tasks
@@ -159,7 +159,7 @@ class GoalDetail extends React.Component {
     return (
       <div>
         <header className="header">
-          <h1 className="title">{this.props.goal.name}</h1>
+          <h1 className="title">{this.props.model.goal.name}</h1>
           <input
             className="new-task"
             placeholder="Add a new task for this goal"
@@ -177,7 +177,7 @@ class GoalDetail extends React.Component {
 }
 
 GoalDetail.propTypes = {
-  goal: PropTypes.object.isRequired
+  model: PropTypes.object.isRequired
 }
 
 export default GoalDetail

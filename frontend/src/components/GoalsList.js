@@ -1,23 +1,23 @@
-import React from "react";
-import PropTypes from "prop-types";
-import key from "weak-key";
-import axios from "axios";
-import GoalSummary from "./GoalSummary";
+import React from 'react'
+import PropTypes from 'prop-types'
+import key from 'weak-key'
+import axios from 'axios'
+import GoalSummary from './GoalSummary'
 
-const GoalsUrl = "/api/goal";
+const GoalsUrl = '/api/goal'
 
 class GoalsList extends React.Component {
-  constructor(props) {
-    super(props);
+  constructor (props) {
+    super(props)
     this.state = {
       goals: props.data
     }
-    this.handleDelete = this.handleDelete.bind(this);
+    this.handleDelete = this.handleDelete.bind(this)
   }
 
-  handleDelete(id) {
-    if (!window.confirm("Delete learning goal?")) {
-      return;
+  handleDelete (id) {
+    if (!window.confirm('Delete learning goal?')) {
+      return
     }
 
     axios.delete(`${GoalsUrl}/${id}/`).then(() => {
@@ -27,7 +27,7 @@ class GoalsList extends React.Component {
     })
   }
 
-  render() {
+  render () {
     return !this.state.goals.length ? (
       <div>
         <h2 className="subtitle">No learning goals yet!</h2>
@@ -44,13 +44,12 @@ class GoalsList extends React.Component {
           )}
         </div>
       </div>
-    );
+    )
   }
 }
 
-
 GoalsList.propTypes = {
   data: PropTypes.array.isRequired
-};
+}
 
-export default GoalsList;
+export default GoalsList

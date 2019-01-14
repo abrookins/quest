@@ -3,9 +3,11 @@ from goals.models import Goal, Task
 
 
 class TaskSerializer(serializers.ModelSerializer):
+    goal = serializers.PrimaryKeyRelatedField(queryset=Goal.objects.all())
+
     class Meta:
         model = Task
-        fields = ('id', 'name', 'completed')
+        fields = ('id', 'name', 'completed', 'goal')
 
 
 class GoalSerializer(serializers.ModelSerializer):

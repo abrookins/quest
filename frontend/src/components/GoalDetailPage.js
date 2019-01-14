@@ -1,26 +1,30 @@
-import React from "react";
-import ReactDOM from "react-dom";
-import DataProvider from "./DataProvider";
-import GoalDetail from "./GoalDetail";
-import TaskModel from "./TaskModel";
-import "../css/application.scss";
-import "../css/tasks.scss";
+import React from 'react'
+import PropTypes from 'prop-types'
+import ReactDOM from 'react-dom'
+import DataProvider from './DataProvider'
+import GoalDetail from './GoalDetail'
+import TaskModel from './TaskModel'
+import '../css/application.scss'
+import '../css/tasks.scss'
 
-// Should we give it the goal ID? How and when?
-let model = new TaskModel();
+const wrapper = document.getElementById('goal')
+const goalId = document.getElementById('goal-id').dataset.id
+
+let model = new TaskModel()
 
 const GoalDetailPage = (props) => (
-  <DataProvider endpoint={`/api/goal/${props.goalId}`}
-                render={data => <GoalDetail goal={data} model={model}/>}/>
-);
+  <DataProvider endpoint={`/api/goal/${props.goalId}`} model={model}
+    render={model => <GoalDetail model={model}/>}/>
+)
 
-const wrapper = document.getElementById("goal");
-const goalId = document.getElementById("goal-id").dataset.id;
-
-function render() {
-  console.log(wrapper);
-  wrapper ? ReactDOM.render(<GoalDetailPage goalId={goalId}/>, wrapper) : null;
+GoalDetailPage.propTypes = {
+  goalId: PropTypes.string.isRequired
 }
 
-model.subscribe(render);
-render();
+function render () {
+  console.log(wrapper)
+  wrapper ? ReactDOM.render(<GoalDetailPage goalId={goalId}/>, wrapper) : null
+}
+
+model.subscribe(render)
+render()

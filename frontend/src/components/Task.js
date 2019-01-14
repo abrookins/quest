@@ -8,7 +8,7 @@ const ENTER_KEY = 13
 class Task extends React.Component {
   constructor (props) {
     super(props)
-    this.state = { editText: this.props.task.title }
+    this.state = { editText: this.props.task.name }
 
     this.handleSubmit = this.handleSubmit.bind(this)
     this.handleEdit = this.handleEdit.bind(this)
@@ -28,12 +28,12 @@ class Task extends React.Component {
 
   handleEdit () {
     this.props.onEdit()
-    this.setState({ editText: this.props.task.title })
+    this.setState({ editText: this.props.task.name })
   }
 
   handleKeyDown (event) {
     if (event.which === ESCAPE_KEY) {
-      this.setState({ editText: this.props.task.title })
+      this.setState({ editText: this.props.task.name })
       this.props.onCancel(event)
     } else if (event.which === ENTER_KEY) {
       this.handleSubmit(event)
@@ -60,7 +60,7 @@ class Task extends React.Component {
             onChange={this.props.onToggle}
           />
           <label onDoubleClick={this.handleEdit}>
-            {this.props.task.title}
+            {this.props.task.name}
           </label>
           <button className='destroy' onClick={this.props.onDestroy}/>
         </div>

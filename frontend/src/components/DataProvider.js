@@ -1,33 +1,46 @@
-import React, {Component} from "react";
-import PropTypes from "prop-types";
+import React, { Component } from 'react'
+import PropTypes from 'prop-types'
+import axios from 'axios'
 
 class DataProvider extends Component {
-  static propTypes = {
-    endpoint: PropTypes.string.isRequired,
-    render: PropTypes.func.isRequired
-  };
-
-  state = {
-    data: [],
-    loaded: false,
-    placeholder: "Loading..."
-  };
-
-  componentDidMount() {
-    fetch(this.props.endpoint)
-      .then(response => {
-        if (response.status !== 200) {
-          return this.setState({placeholder: "Something went wrong"});
-        }
-        return response.json();
-      })
-      .then(data => this.setState({data: data, loaded: true}));
+  constructor (props) {
+    super(props)
+    this.state = {
+      model: props.model,
+      loaded: false,
+      placeholder: 'Loading...'
+    }
   }
 
-  render() {
-    const {data, loaded, placeholder} = this.state;
-    return loaded ? this.props.render(data) : <p>{placeholder}</p>;
+  componentDidMount () {
+    let { model } = this.state
+    axios.get(this.props.endpoint)
+      .then(response => {
+        if (response.status !== 200) {
+          return this.setState({ placeholder: 'Something went wrong' })
+        }
+        return response.data
+      })
+      .then((data) => {
+        if (this.state.model) {
+          model.load(data)
+          this.setState({ model: model, loaded: true })
+        } else {
+          this.setState({ model: data, loaded: true })
+        }
+      })
+  }
+
+  render () {
+    const { model, loaded, placeholder } = this.state
+    return loaded ? this.props.render(model) : <p>{placeholder}</p>
   }
 }
 
-export default DataProvider;
+DataProvider.propTypes = {
+  endpoint: PropTypes.string.isRequired,
+  render: PropTypes.func.isRequired,
+  model: PropTypes.object.isRequired
+}
+
+export default DataProvider
