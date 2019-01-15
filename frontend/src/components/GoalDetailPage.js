@@ -22,7 +22,6 @@ GoalDetailPage.propTypes = {
 }
 
 function render () {
-  console.log(wrapper)
   wrapper ? ReactDOM.render(<GoalDetailPage goalId={goalId}/>, wrapper) : null
 }
 

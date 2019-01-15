@@ -104,13 +104,10 @@ TaskModel.prototype.save = function (taskToSave, text) {
   this.update(task)
 }
 
-// TODO: Should this delete?
 TaskModel.prototype.clearCompleted = function () {
-  this.tasks = this.tasks.filter(function (task) {
-    return !task.completed
-  })
-
-  this.update()
+  let completedTasks = this.tasks.filter((task) => task.completed)
+  completedTasks.map((task) => this.delete(task))
+  this.tasks = this.tasks.filter((task) => !task.completed)
 }
 
 export default TaskModel
