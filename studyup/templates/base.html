@@ -3,6 +3,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <!--<script src="http://localhost:8097"></script>-->
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>{% block title %}{% endblock title %}</title>
@@ -44,79 +45,20 @@
 
       <div id="navMenuExample" class="navbar-menu">
         <div class="navbar-start">
-          <div class="navbar-item has-dropdown is-hoverable">
-            <a class="navbar-link  is-active" href="/documentation/overview/start/">
-              Docs
-            </a>
-            <div class="navbar-dropdown ">
-              <a class="navbar-item " href="/documentation/overview/start/">
-                Overview
-              </a>
-              <a class="navbar-item " href="http://bulma.io/documentation/modifiers/syntax/">
-                Modifiers
-              </a>
-              <a class="navbar-item " href="http://bulma.io/documentation/grid/columns/">
-                Grid
-              </a>
-              <a class="navbar-item " href="http://bulma.io/documentation/layout/container/">
-                Layout
-              </a>
-              <a class="navbar-item " href="http://bulma.io/documentation/form/general/">
-                Form
-              </a>
-              <a class="navbar-item " href="http://bulma.io/documentation/elements/box/">
-                Elements
-              </a>
-              <a class="navbar-item is-active"
-                 href="http://bulma.io/documentation/components/breadcrumb/">
-                Components
-              </a>
-            </div>
-          </div>
-          <div class="navbar-item has-dropdown is-hoverable">
-            <div class="navbar-link">
-              More
-            </div>
-            <div id="moreDropdown" class="navbar-dropdown ">
-              <a class="navbar-item " href="http://bulma.io/extensions/">
-                <div class="level is-mobile">
-                  <div class="level-left">
-                    <div class="level-item">
-                      <p>
-                        <strong>Extensions</strong>
-                        <br>
-                        <small>Side projects to enhance Bulma</small>
-                      </p>
-                    </div>
-                  </div>
-                  <div class="level-right">
-                    <div class="level-item">
-                    <span class="icon has-text-info">
-                      <i class="fa fa-plug"></i>
-                    </span>
-                    </div>
-                  </div>
-                </div>
-              </a>
-            </div>
-          </div>
         </div>
 
         <div class="navbar-end">
+          {% url 'account_signup' as signup_url %}
           {% url 'login' as login_url %}
-          {% if login_url %}
-            <a class="navbar-item is-hidden-desktop-only" href="{{ login_url }}">
-              Login
+          {% url 'logout' as logout_url %}
+          {% if user.is_authenticated %}
+            <a class="navbar-item is-hidden-desktop-only" href="{{ logout_url }}">
+              Log out
             </a>
-          {% endif %}
-          {% url 'account_login' as login_url %}
-          {% if login_url %}
+          {% else %}
             <a class="navbar-item is-hidden-desktop-only" href="{{ login_url }}">
               Log in
             </a>
-          {% endif %}
-          {% url 'account_signup' as signup_url %}
-          {% if signup_url %}
             <a class="navbar-item is-hidden-desktop-only" href="{{ signup_url }}">
               Sign up
             </a>

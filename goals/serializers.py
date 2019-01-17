@@ -10,6 +10,15 @@ class TaskSerializer(serializers.ModelSerializer):
         fields = ('id', 'name', 'completed', 'goal')
 
 
+class NewGoalSerializer(serializers.ModelSerializer):
+    user = serializers.HiddenField(default=serializers.CurrentUserDefault())
+
+    class Meta:
+        model = Goal
+        fields = ('id', 'user', 'name', 'description', 'slug',
+                  'percentage_complete')
+
+
 class GoalSerializer(serializers.ModelSerializer):
     tasks = TaskSerializer(many=True, read_only=False)
 

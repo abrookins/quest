@@ -40,7 +40,7 @@ class DataProvider extends Component {
 DataProvider.propTypes = {
   endpoint: PropTypes.string.isRequired,
   render: PropTypes.func.isRequired,
-  model: PropTypes.object.isRequired
+  model: PropTypes.object
 }
 
 export default DataProvider

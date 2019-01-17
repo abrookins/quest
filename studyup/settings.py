@@ -31,19 +31,21 @@ ALLOWED_HOSTS = ['localhost', 'work']
 # Application definition
 
 INSTALLED_APPS = [
-    'django.contrib.admin',
+    'studyup',
+    'goals.apps.GoalsConfig',
+    'accounts.apps.AccountsConfig',
+    'frontend.apps.FrontendConfig',
+
+    'bulma',  # Comes first to override Django admin auth templates.
+
     'django.contrib.auth',
+    'django.contrib.admin',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
     'rest_framework',
-    'bulma',
-
-    'studyup',
-    'goals.apps.GoalsConfig',
-    'frontend.apps.FrontendConfig',
 ]
 
 MIDDLEWARE = [
@@ -128,3 +130,15 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.1/howto/static-files/
 
 STATIC_URL = '/static/'
+
+
+LOGIN_REDIRECT_URL = '/'
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.SessionAuthentication',
+    )
+}
+
+CSRF_COOKIE_NAME = "csrftoken"
+

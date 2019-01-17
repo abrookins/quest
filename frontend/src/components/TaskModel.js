@@ -1,6 +1,9 @@
 import Utils from './Utils'
 import axios from 'axios'
 
+axios.defaults.xsrfHeaderName = 'X-CSRFTOKEN'
+axios.defaults.xsrfCookieName = 'csrftoken'
+
 const TaskUrl = '/api/task'
 
 const TaskModel = function (goal) {
@@ -99,7 +102,7 @@ TaskModel.prototype.save = function (taskToSave, text) {
   this.tasks = this.tasks.map(function (task) {
     return task !== taskToSave ? task : Utils.extend({}, task, { name: text })
   })
-  let task = this.tasks.map((task) => task.id === taskToSave.id)
+  let task = this.tasks.filter((task) => task.id === taskToSave.id)[0]
 
   this.update(task)
 }
