@@ -6,12 +6,48 @@ class Task(models.Model):
         'Goal', on_delete=models.CASCADE, related_name='tasks')
     name = models.CharField(help_text="The name of the goal", max_length=255)
     url = models.URLField(help_text="The URL of this task")
-    completed = models.BooleanField(
-        help_text="Whether or not this task is complete", default=False)
+
+    def is_completed(self, user):
+        return self.statuses.filter(user=user, status=TaskStatus.DONE).exists()
+
+    def complete(self, user):
+        completion = this.statuses.get_or_create(user=user)
+        completion.update(status=TaskStatus.DONE)
+
+    def __str__(self):
+        return 'Task: {}'.format(self.name)
+
+
+class TaskStatus(models.Model):
+    INCOMPLETE = 1
+    DONE = 2
+    CHOICES = (
+        (INCOMPLETE, 'Incomplete'),
+        (DONE, 'Done'),
+    )
+
+    task = models.ForeignKey(
+        'Task', on_delete=models.CASCADE, related_name='statuses')
+    user = models.ForeignKey(
+        'auth.User', on_delete=models.CASCADE, related_name='task_statuses')
+    status = models.PositiveSmallIntegerField(
+        help_text="The status of this task", default=False, choices=CHOICES)
 
     def complete(self):
-        self.completed = True
+        self.status = DONE
         self.save()
+
+    def status_text(self):
+        if self.status == self.INCOMPLETE:
+            return 'incomplete'
+        return 'done'
+
+    def __str__(self):
+        return "{} {} by {}".format(self.task.name, self.status_text,
+                                    self.user)
+
+    class Meta:
+        unique_together = ('user', 'task')
 
 
 class Goal(models.Model):
@@ -29,10 +65,11 @@ class Goal(models.Model):
         help_text="Whether or not this goal is publicly accessible")
 
     def __str__(self):
-        return "Goal: {}".format(self.name)
+        return self.name
 
-    def percentage_complete(self):
-        completed = self.tasks.filter(completed=True).count()
+    def percentage_complete(self, user):
+        completed = self.tasks.filter(
+            statuses__status=TaskStatus.DONE, user=user).count()
         if completed == 0:
             return 0
         return (completed / self.tasks.count()) * 100

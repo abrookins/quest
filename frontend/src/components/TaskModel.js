@@ -48,8 +48,7 @@ TaskModel.prototype.delete = function (task, inform = true) {
 TaskModel.prototype.add = function (task, inform = true) {
   let data = {
     goal: parseInt(this.goal.id),
-    name: task,
-    completed: false
+    name: task
   }
   let promise = axios.post(`${TaskUrl}/`, data).then((response) => {
     this.tasks = this.tasks.concat(response.data)
