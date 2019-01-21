@@ -1,1 +1,1 @@
-import GoalDetailPage from "./components/GoalDetailPage";
+import GoalDetailPage from './components/GoalDetailPage'

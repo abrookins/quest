@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% load static %}
+
+<!--How to get the goal name in the title?-->
+{% block title %}Learning Goals{% endblock %}
+
+{% block content %}
+  <div id="goal"><!-- React --></div>
+{% endblock content %}
+
+{% block extra_javascript %}
+  <script src="{% static "frontend/new_goal.bundle.js" %}"></script>
+{% endblock extra_javascript %}

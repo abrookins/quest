@@ -28,6 +28,7 @@ class GoalDetail extends React.Component {
     this.save = this.save.bind(this)
     this.cancel = this.cancel.bind(this)
     this.clearCompleted = this.clearCompleted.bind(this)
+    this.handleEditGoal = this.handleEditGoal.bind(this)
   }
 
   componentDidMount () {
@@ -159,14 +160,24 @@ class GoalDetail extends React.Component {
     return (
       <div>
         <header className="header">
-          <h1 className="title">{this.props.model.goal.name}</h1>
+          <h1 className="title">
+            <div className="level">
+              <div className="level-left">
+                {this.props.model.goal.name}
+              </div>
+              <div className="level-right">
+                <a href="#" className="button">Edit</a>
+              </div>
+            </div>
+          </h1>
+
           <input
             className="new-task"
             placeholder="Add a new task for this goal"
             value={this.state.newTask}
             onKeyDown={this.handleNewTaskKeyDown}
             onChange={this.handleChange}
-            autoFocus={true}
+            autoFocus="true"
           />
         </header>
         {main}

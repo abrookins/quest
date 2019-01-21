@@ -11,7 +11,7 @@ class Task(models.Model):
         return self.statuses.filter(user=user, status=TaskStatus.DONE).exists()
 
     def complete(self, user):
-        completion = this.statuses.get_or_create(user=user)
+        completion = self.statuses.get_or_create(user=user)
         completion.update(status=TaskStatus.DONE)
 
     def __str__(self):
@@ -34,7 +34,7 @@ class TaskStatus(models.Model):
         help_text="The status of this task", default=False, choices=CHOICES)
 
     def complete(self):
-        self.status = DONE
+        self.status = self.DONE
         self.save()
 
     def status_text(self):
@@ -69,7 +69,7 @@ class Goal(models.Model):
 
     def percentage_complete(self, user):
         completed = self.tasks.filter(
-            statuses__status=TaskStatus.DONE, user=user).count()
+            statuses__status=TaskStatus.DONE, statuses__user=user).count()
         if completed == 0:
             return 0
         return (completed / self.tasks.count()) * 100

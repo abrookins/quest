@@ -49,17 +49,17 @@ class NewGoalSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Goal
-        fields = ('id', 'user', 'name', 'description', 'slug')
+        fields = ('id', 'user', 'name')
 
 
 class GoalSerializer(serializers.ModelSerializer):
     tasks = TaskSerializer(many=True)
     percentage_complete = serializers.SerializerMethodField(
-        'percentage_complete')
+        'calc_percentage_complete')
 
     class Meta:
         model = Goal
-        fields = ('id', 'name', 'description', 'slug', 'tasks')
+        fields = ('id', 'name', 'description', 'slug', 'tasks', 'percentage_complete')
 
-    def percentage_complete(self, goal):
+    def calc_percentage_complete(self, goal):
         return goal.percentage_complete(self.context['request'].user)

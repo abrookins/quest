@@ -1,1 +1,1 @@
-import GoalsListPage from "./components/GoalsListPage";
+import GoalListPage from "./components/GoalsListPage";

@@ -34,7 +34,8 @@
   },
   "scripts": {
     "build": "webpack --config webpack.config.js --progress --colors --mode development",
-    "watch": "webpack --config webpack.config.js --watch --mode development"
+    "watch": "webpack --config webpack.config.js --watch --mode development",
+    "watchprod": "webpack -p --config webpack.config.js --watch --mode production"
   },
   "devDependencies": {
     "eslint": "^5.12.0",

@@ -1,10 +1,8 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import key from 'weak-key'
-import axios from 'axios'
 import GoalSummary from './GoalSummary'
-
-const GoalsUrl = '/api/goal'
+import GoalModel from './GoalModel'
 
 class GoalsList extends React.Component {
   constructor (props) {
@@ -20,7 +18,7 @@ class GoalsList extends React.Component {
       return
     }
 
-    axios.delete(`${GoalsUrl}/${id}/`).then(() => {
+    new GoalModel(id).delete().then(() => {
       this.setState({
         goals: this.state.goals.filter((goal) => goal.id !== id)
       })
@@ -32,7 +30,7 @@ class GoalsList extends React.Component {
       <div>
         <h2 className="subtitle">No learning goals yet!</h2>
         <p>
-          <a href="" className="button is-primary">Create a new learning goal.</a>
+          <a href="/goal/new" className="button is-primary">Create a new learning goal.</a>
         </p>
       </div>
     ) : (
@@ -43,13 +41,17 @@ class GoalsList extends React.Component {
             goal => <GoalSummary goal={goal} deleteFn={this.handleDelete} key={key(goal)}/>
           )}
         </div>
+        <p>
+          <a href="/goal/new" className="button is-primary">Add goal</a>
+        </p>
       </div>
     )
   }
 }
 
 GoalsList.propTypes = {
-  data: PropTypes.array.isRequired
+  data: PropTypes.array.isRequired,
+  model: PropTypes.object.isRequired
 }
 
 export default GoalsList
