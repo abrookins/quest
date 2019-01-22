@@ -1,71 +1,106 @@
 import axios from 'axios'
+import TaskModel from './TaskModel'
 
 axios.defaults.xsrfHeaderName = 'X-CSRFTOKEN'
 axios.defaults.xsrfCookieName = 'csrftoken'
 
 const GoalUrl = '/api/goal'
 
-const GoalModel = function (id = null, name = '') {
-  this.id = id
-  this.name = name
-  this.onChanges = []
-}
+class GoalModel {
+  constructor (id = null, name = '') {
+    this.id = id
+    this.name = name
+    this.tasks = new TaskModel()
+    this.onChanges = []
 
-GoalModel.prototype.inform = function (onChange) {
-  this.onChanges.forEach(function (cb) {
-    cb()
-  })
-}
+    // Allow components to subscribe to GoalModel to receive
+    // changes to both GoalModel and TaskModel state.
+    this.tasks.subscribe(() => this.inform())
+  }
 
-GoalModel.prototype.subscribe = function (onChange) {
-  this.onChanges.push(onChange)
-}
-
-GoalModel.prototype.get = function (goalId, inform = true) {
-  let promise = axios.get(`${GoalUrl}/${goalId}/`)
-  promise.then((response) => {
-    this.name = response.data.name
-    this.id = response.data.id
-  })
-  if (inform) {
-    promise.then((response) => {
-      this.inform()
+  inform (onChange) {
+    this.onChanges.forEach(function (cb) {
+      cb()
     })
   }
-  return promise
-}
 
-GoalModel.prototype.create = function (data, inform = true) {
-  let promise = axios.post(`${GoalUrl}/`, data)
-  if (inform) {
-    promise.then((response) => {
-      this.inform()
-    })
+  subscribe (onChange) {
+    this.onChanges.push(onChange)
   }
-  return promise
-}
 
-GoalModel.prototype.update = function (inform = true) {
-  let promise = axios.put(`${GoalUrl}/${this.id}/`, {
-    name: this.name,
-    id: this.id
-  })
-  if (inform) {
-    promise.then((response) => {
-      this.inform()
-    })
-  }
-  return promise
-}
+  load (data, inform = true) {
+    this.name = data.name
+    this.id = data.id
+    this.tasks.load(this.id, data.tasks)
 
-GoalModel.prototype.delete = function (inform = true) {
-  let promise = axios.delete(`${GoalUrl}/${this.id}/`)
-  if (inform) {
-    promise.then((response) => {
+    if (inform) {
       this.inform()
-    })
+    }
   }
-  return promise
+
+  save (newName = '') {
+    this.name = newName
+    this.update()
+  }
+
+  // TODO: rename to "load"
+  get (goalId, inform = true) {
+    let promise = axios.get(`${GoalUrl}/${goalId}/`).catch((error) => {
+      console.log(error)
+      window.alert('Could not retrieve goal due to an error.')
+    })
+    promise.then((response) => {
+      this.load(response.data, false)
+    })
+    if (inform) {
+      promise.then((response) => {
+        this.inform()
+      })
+    }
+    return promise
+  }
+
+  create (data, inform = true) {
+    let promise = axios.post(`${GoalUrl}/`, data).catch((error) => {
+      console.log(error)
+      window.alert('An error prevented creating the goal.')
+    })
+    if (inform) {
+      promise.then((response) => {
+        this.inform()
+      })
+    }
+    return promise
+  }
+
+  update (inform = true) {
+    let promise = axios.put(`${GoalUrl}/${this.id}/`, {
+      name: this.name,
+      id: this.id
+    }).catch((error) => {
+      console.log(error)
+      window.alert('An error prevented updating the goal.')
+    })
+    if (inform) {
+      promise.then((response) => {
+        this.inform()
+      })
+    }
+    return promise
+  }
+
+  delete (inform = true) {
+    let promise = axios.delete(`${GoalUrl}/${this.id}/`).catch((error) => {
+      console.log(error)
+      window.alert('An error prevented deleting the goal.')
+    })
+    if (inform) {
+      promise.then((response) => {
+        this.inform()
+      })
+    }
+    return promise
+  }
 }
 
 export default GoalModel

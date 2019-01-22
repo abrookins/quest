@@ -41,12 +41,24 @@
     //text-rendering: optimizeLegibility;
 }
 
+.goal-title .edit {
+    display: none;
+}
+
+.goal-title.editing .edit {
+    display: block;
+}
+
+.goal-title.editing .view {
+    display: none;
+}
+
 .new-task,
 .edit {
     position: relative;
     margin: 0;
     width: 100%;
-    font-size: 24px;
+    font-size: 28px;
     font-family: inherit;
     font-weight: inherit;
     line-height: 1.4em;

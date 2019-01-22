@@ -1,8 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 
-// TODO: Editable with GoalModel
-
 const GoalSummary = (props) =>
   <div className="learning-goal row-card card">
     <div className="card-header">

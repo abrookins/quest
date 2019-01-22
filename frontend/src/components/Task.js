@@ -27,7 +27,7 @@ class Task extends React.Component {
   }
 
   handleEdit () {
-    this.props.onEdit()
+    this.props.onEdit(this.props.task)
     this.setState({ editText: this.props.task.name })
   }
 

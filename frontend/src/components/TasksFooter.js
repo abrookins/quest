@@ -15,7 +15,7 @@ class TasksFooter extends React.Component {
     if (this.props.completedCount > 0) {
       clearButton = (
         <button
-          className="clear-completed"
+          className="clear-completed button is-small"
           onClick={this.props.onClearCompleted}>
           Clear completed
         </button>

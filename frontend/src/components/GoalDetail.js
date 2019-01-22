@@ -1,6 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Router } from 'director/build/director'
+import GoalTitle from './GoalTitle'
 import TasksFooter from './TasksFooter'
 import Task from './Task'
 
@@ -14,7 +15,8 @@ class GoalDetail extends React.Component {
     super(props)
     this.state = {
       mode: ALL,
-      editing: null,
+      editingTask: null,
+      editingGoal: false,
       newTask: ''
     }
 
@@ -28,7 +30,10 @@ class GoalDetail extends React.Component {
     this.save = this.save.bind(this)
     this.cancel = this.cancel.bind(this)
     this.clearCompleted = this.clearCompleted.bind(this)
-    this.handleEditGoal = this.handleEditGoal.bind(this)
+
+    this.editGoal = this.editGoal.bind(this)
+    this.saveGoal = this.saveGoal.bind(this)
+    this.cancelGoal = this.cancelGoal.bind(this)
   }
 
   componentDidMount () {
@@ -55,45 +60,58 @@ class GoalDetail extends React.Component {
     const val = this.state.newTask.trim()
 
     if (val) {
-      this.props.model.add(val)
+      this.props.model.tasks.add(val)
       this.setState({ newTask: '' })
     }
   }
 
   toggleAll (event) {
     const checked = event.target.checked
-    this.props.model.toggleAll(checked)
+    this.props.model.tasks.toggleAll(checked)
   }
 
   toggle (taskToToggle) {
-    this.props.model.toggle(taskToToggle)
+    this.props.model.tasks.toggle(taskToToggle)
   }
 
   destroy (task) {
-    this.props.model.destroy(task)
+    this.props.model.tasks.destroy(task)
   }
 
   edit (task) {
-    this.setState({ editing: task.id })
+    this.setState({ editingTask: task.id })
   }
 
   save (taskToSave, text) {
-    this.props.model.save(taskToSave, text)
-    this.setState({ editing: null })
+    this.props.model.tasks.save(taskToSave, text)
+    this.setState({ editingTask: null })
   }
 
   cancel () {
-    this.setState({ editing: null })
+    this.setState({ editingTask: null })
   }
 
   clearCompleted () {
-    this.props.model.clearCompleted()
+    this.props.model.tasks.clearCompleted()
+  }
+
+  editGoal () {
+    this.setState({ editingGoal: true })
+  }
+
+  saveGoal (newName) {
+    this.props.model.save(newName)
+    this.setState({ editingGoal: false })
+  }
+
+  cancelGoal () {
+    this.setState({ editingGoal: false })
   }
 
   render () {
     let footer
     let main
-    const tasks = this.props.model.tasks
+    const tasks = this.props.model.tasks.all()
 
     const shownTasks = tasks.filter(function (task) {
       switch (this.state.mode) {
@@ -114,7 +132,7 @@ class GoalDetail extends React.Component {
           onToggle={this.toggle.bind(this, task)}
           onDestroy={this.destroy.bind(this, task)}
           onEdit={this.edit.bind(this, task)}
-          editing={this.state.editing === task.id}
+          editing={this.state.editingTask === task.id}
           onSave={this.save.bind(this, task)}
           onCancel={this.cancel}
         />
@@ -160,24 +178,15 @@ class GoalDetail extends React.Component {
     return (
       <div>
         <header className="header">
-          <h1 className="title">
-            <div className="level">
-              <div className="level-left">
-                {this.props.model.goal.name}
-              </div>
-              <div className="level-right">
-                <a href="#" className="button">Edit</a>
-              </div>
-            </div>
-          </h1>
-
+          <GoalTitle name={this.props.model.name} editing={this.state.editingGoal}
+            onEdit={this.editGoal} onSave={this.saveGoal} onCancel={this.cancelGoal} />
           <input
             className="new-task"
             placeholder="Add a new task for this goal"
             value={this.state.newTask}
             onKeyDown={this.handleNewTaskKeyDown}
             onChange={this.handleChange}
-            autoFocus="true"
+            autoFocus={true}
           />
         </header>
         {main}

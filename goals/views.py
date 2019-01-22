@@ -31,7 +31,8 @@ class TaskView(UserOwnedTaskMixin, generics.RetrieveUpdateDestroyAPIView):
         return {'request': self.request}
 
     def perform_update(self, serializer):
-        task = serializer.save()
+        # TODO: What was the point of this?
+        serializer.save()
 
     def get_serializer_class(self):
         if self.request.method == 'PUT':
@@ -52,6 +53,11 @@ class GoalListCreateView(UserOwnedGoalMixin, generics.ListCreateAPIView):
 class GoalView(UserOwnedGoalMixin, generics.RetrieveUpdateDestroyAPIView):
     queryset = Goal.objects.all()
     serializer_class = GoalSerializer
+
+    def get_serializer_class(self):
+        if self.request.method == 'PUT':
+            return NewGoalSerializer
+        return GoalSerializer
 
     def get_serializer_context(self):
         return {'request': self.request}
