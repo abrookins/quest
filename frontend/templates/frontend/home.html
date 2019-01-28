@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Home{% endblock %}
+
+{% block content %}
+  <div id="homepage"><!-- React --></div>
+{% endblock content %}
+
+{% block extra_javascript %}
+  <script src="{% static "frontend/home.bundle.js" %}"></script>
+{% endblock extra_javascript %}

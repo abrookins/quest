@@ -3,6 +3,12 @@ from django.shortcuts import render
 
 
 @login_required
+def home(request):
+    """Render the authenticated homepage"""
+    return render(request, "frontend/home.html")
+
+
+@login_required
 def goals_list(request):
     """Render the goals list page"""
     return render(request, 'frontend/goals_list.html')

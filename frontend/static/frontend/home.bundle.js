@@ -81,7 +81,7 @@
 /******/
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = "./frontend/src/goals_list.js");
+/******/ 	return __webpack_require__(__webpack_require__.s = "./frontend/src/home.js");
 /******/ })
 /************************************************************************/
 /******/ ({
@@ -134,15 +134,15 @@ eval("__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var reac
 
 /***/ }),
 
-/***/ "./frontend/src/components/GoalsListPage.js":
-/*!**************************************************!*\
-  !*** ./frontend/src/components/GoalsListPage.js ***!
-  \**************************************************/
+/***/ "./frontend/src/components/Homepage.js":
+/*!*********************************************!*\
+  !*** ./frontend/src/components/Homepage.js ***!
+  \*********************************************/
 /*! no exports provided */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-eval("__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ \"./node_modules/react/index.js\");\n/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);\n/* harmony import */ var react_dom__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react-dom */ \"./node_modules/react-dom/index.js\");\n/* harmony import */ var react_dom__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(react_dom__WEBPACK_IMPORTED_MODULE_1__);\n/* harmony import */ var _DataProvider__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./DataProvider */ \"./frontend/src/components/DataProvider.js\");\n/* harmony import */ var _GoalsList__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./GoalsList */ \"./frontend/src/components/GoalsList.js\");\n/* harmony import */ var _css_application_scss__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../css/application.scss */ \"./frontend/src/css/application.scss\");\n/* harmony import */ var _css_application_scss__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_css_application_scss__WEBPACK_IMPORTED_MODULE_4__);\n\n\n\n\n\n\nvar GoalsListPage = function GoalsListPage() {\n  return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_DataProvider__WEBPACK_IMPORTED_MODULE_2__[\"default\"], {\n    endpoint: \"/api/goal/\",\n    render: function render(data) {\n      return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_GoalsList__WEBPACK_IMPORTED_MODULE_3__[\"default\"], {\n        data: data,\n        header: \"Learning Goals\",\n        showAddButton: true\n      });\n    }\n  });\n};\n\nvar wrapper = document.getElementById('goals_list');\nwrapper ? react_dom__WEBPACK_IMPORTED_MODULE_1___default.a.render(react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(GoalsListPage, null), wrapper) : null;\n\n//# sourceURL=webpack:///./frontend/src/components/GoalsListPage.js?");
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ \"./node_modules/react/index.js\");\n/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);\n/* harmony import */ var react_dom__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react-dom */ \"./node_modules/react-dom/index.js\");\n/* harmony import */ var react_dom__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(react_dom__WEBPACK_IMPORTED_MODULE_1__);\n/* harmony import */ var _DataProvider__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./DataProvider */ \"./frontend/src/components/DataProvider.js\");\n/* harmony import */ var _GoalsList__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./GoalsList */ \"./frontend/src/components/GoalsList.js\");\n/* harmony import */ var _css_application_scss__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../css/application.scss */ \"./frontend/src/css/application.scss\");\n/* harmony import */ var _css_application_scss__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_css_application_scss__WEBPACK_IMPORTED_MODULE_4__);\n\n\n\n\n\n\nvar Homepage = function Homepage() {\n  return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(\"div\", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(\"div\", {\n    className: \"your-goals\"\n  }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_DataProvider__WEBPACK_IMPORTED_MODULE_2__[\"default\"], {\n    endpoint: \"/api/goal/?has_started=true\",\n    render: function render(data) {\n      return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_GoalsList__WEBPACK_IMPORTED_MODULE_3__[\"default\"], {\n        data: data,\n        header: \"Your Learning Goals\",\n        moreUrl: \"/goals\"\n      });\n    }\n  })), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(\"div\", {\n    className: \"public-goals\"\n  }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_DataProvider__WEBPACK_IMPORTED_MODULE_2__[\"default\"], {\n    endpoint: \"/api/goal/?is_public=true&has_started=false\",\n    render: function render(data) {\n      return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_GoalsList__WEBPACK_IMPORTED_MODULE_3__[\"default\"], {\n        data: data,\n        header: \"Recommended Goals\"\n      });\n    }\n  })));\n};\n\nvar wrapper = document.getElementById('homepage');\nwrapper ? react_dom__WEBPACK_IMPORTED_MODULE_1___default.a.render(react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(Homepage, null), wrapper) : null;\n\n//# sourceURL=webpack:///./frontend/src/components/Homepage.js?");
 
 /***/ }),
 
@@ -181,15 +181,15 @@ eval("\nvar content = __webpack_require__(/*! !../../../node_modules/css-loader/
 
 /***/ }),
 
-/***/ "./frontend/src/goals_list.js":
-/*!************************************!*\
-  !*** ./frontend/src/goals_list.js ***!
-  \************************************/
+/***/ "./frontend/src/home.js":
+/*!******************************!*\
+  !*** ./frontend/src/home.js ***!
+  \******************************/
 /*! no exports provided */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-eval("__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var _components_GoalsListPage__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./components/GoalsListPage */ \"./frontend/src/components/GoalsListPage.js\");\n\n\n//# sourceURL=webpack:///./frontend/src/goals_list.js?");
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var _components_Homepage__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./components/Homepage */ \"./frontend/src/components/Homepage.js\");\n\n\n//# sourceURL=webpack:///./frontend/src/home.js?");
 
 /***/ }),
 

@@ -1,4 +1,5 @@
 from django.db import models
+from django.db.models import Q
 
 
 class Task(models.Model):
@@ -40,6 +41,8 @@ class TaskStatus(models.Model):
     def status_text(self):
         if self.status == self.INCOMPLETE:
             return 'incomplete'
+        elif self.status == self.DONE:
+            return 'done'
         return 'done'
 
     def __str__(self):
@@ -52,7 +55,11 @@ class TaskStatus(models.Model):
 
 class Goal(models.Model):
     user = models.ForeignKey(
-        'auth.User', on_delete=models.CASCADE, related_name='goals')
+        'auth.User',
+        on_delete=models.CASCADE,
+        related_name='goals',
+        null=True,
+        blank=True)
     name = models.CharField(help_text="The name of the goal", max_length=255)
     description = models.TextField(
         help_text="The description of the goal", blank=True, null=True)
@@ -73,3 +80,20 @@ class Goal(models.Model):
         if completed == 0:
             return 0
         return (completed / self.tasks.count()) * 100
+
+    def has_started(self, user):
+        # TODO: I don't have to use Q here anymore.
+        return self.tasks.filter(
+            Q(statuses__status=TaskStatus.INCOMPLETE)
+            | Q(statuses__status=TaskStatus.INCOMPLETE),
+            statuses__user=user).exists()
+
+    def start(self, user):
+        first_task = self.tasks.first()
+        if first_task:
+            first_task.statuses.get_or_create(
+                status=TaskStatus.INCOMPLETE, user=user)
+
+    def clear_status_for_user(self, user):
+        TaskStatus.objects.filter(
+            task__in=self.tasks.all(), user=user).delete()

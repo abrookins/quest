@@ -6,7 +6,7 @@ import '../css/application.scss'
 
 const GoalsListPage = () => (
   <DataProvider endpoint="/api/goal/"
-    render={data => <GoalsList data={data}/>}/>
+    render={data => <GoalsList data={data} header="Learning Goals" showAddButton={true} />}/>
 )
 
 const wrapper = document.getElementById('goals_list')

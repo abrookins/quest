@@ -43,7 +43,6 @@ class GoalModel {
     this.update()
   }
 
-  // TODO: rename to "load"
   get (goalId, inform = true) {
     let promise = axios.get(`${GoalUrl}/${goalId}/`).catch((error) => {
       console.log(error)
@@ -80,6 +79,19 @@ class GoalModel {
     }).catch((error) => {
       console.log(error)
       window.alert('An error prevented updating the goal.')
+    })
+    if (inform) {
+      promise.then((response) => {
+        this.inform()
+      })
+    }
+    return promise
+  }
+
+  start (inform = true) {
+    let promise = axios.post(`${GoalUrl}/${this.id}/start/`).catch((error) => {
+      console.log(error)
+      window.alert('An error prevented starting the goal.')
     })
     if (inform) {
       promise.then((response) => {

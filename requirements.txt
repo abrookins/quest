@@ -6,3 +6,4 @@ Pillow==5.3.0
 django-bulma==0.5.3.0
 djangorestframework==3.9.0
 pylint
+yapf

@@ -4,7 +4,8 @@ module.exports = {
   entry: {
     goals_list: './frontend/src/goals_list.js',
     goal: './frontend/src/goal.js',
-    new_goal: './frontend/src/new_goal.js'
+    new_goal: './frontend/src/new_goal.js',
+    home: './frontend/src/home.js'
   },
   output: {
     path: path.resolve('./frontend/static/frontend/'),
