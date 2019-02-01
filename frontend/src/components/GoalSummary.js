@@ -14,7 +14,7 @@ const GoalSummary = (props) => {
       )}
     </progress>
   </div> : <button className="is-info is-small button is-fullwidth"
-    onClick={() => props.startFn(props.goal.id)}>Start</button>
+    onClick={props.handleStart}>Start</button>
 
   return <div className="learning-goal row-card card">
     <div className="card-header">
@@ -22,7 +22,7 @@ const GoalSummary = (props) => {
         <a href={`/goal/${props.goal.id}`}>{props.goal.name}</a>
       </p>
       <p className="card-header-icon">
-        <i className="fa fa-trash-o goal-button" onClick={() => props.deleteFn(props.goal.id)} />
+        <i className="fa fa-trash-o goal-button" onClick={props.handleDelete} />
       </p>
     </div>
     <div className="card-content">
@@ -36,8 +36,8 @@ const GoalSummary = (props) => {
 
 GoalSummary.propTypes = {
   goal: PropTypes.object.isRequired,
-  deleteFn: PropTypes.func.isRequired,
-  startFn: PropTypes.func.isRequired
+  handleDelete: PropTypes.func.isRequired,
+  handleStart: PropTypes.func.isRequired
 }
 
 export default GoalSummary

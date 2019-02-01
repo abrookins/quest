@@ -1,0 +1,117 @@
+{% load static bulma_tags %}
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <!--<script src="http://localhost:8097"></script>-->
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}{% endblock title %}</title>
+  {% block css %}
+  <link rel="stylesheet" href="{% static 'bulma/css/font-awesome.min.css' %}">
+  <link rel="stylesheet" href="{% static 'bulma/css/style.css' %}">
+  {% block extra_css %}{% endblock extra_css %}
+  {% endblock css %}
+</head>
+
+<body>
+
+  {% block header %}
+  <div class="container">
+    <nav class="navbar">
+      <div class="navbar-brand">
+        <a class="navbar-item" href="/">
+          Spellbook Quest
+        </a>
+
+        <a class="navbar-item is-hidden-desktop" href="https://github.com/jgthms/bulma" target="_blank">
+          <span class="icon" style="color: #333;">
+            <i class="fa fa-github"></i>
+          </span>
+        </a>
+
+        <a class="navbar-item is-hidden-desktop" href="https://twitter.com/jgthms" target="_blank">
+          <span class="icon" style="color: #55acee;">
+            <i class="fa fa-twitter"></i>
+          </span>
+        </a>
+
+        <div class="navbar-burger burger" data-target="navMenuExample">
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+      </div>
+
+      <div id="navMenuExample" class="navbar-menu">
+        <div class="navbar-start">
+        </div>
+
+        <div class="navbar-end">
+          {% url 'account_signup' as signup_url %}
+          {% url 'login' as login_url %}
+          {% url 'logout' as logout_url %}
+          {% if user.is_authenticated %}
+          <a class="navbar-item is-hidden-desktop-only" href="{{ logout_url }}">
+            Log out
+          </a>
+          {% else %}
+          <a class="navbar-item is-hidden-desktop-only" href="{{ login_url }}">
+            Log in
+          </a>
+          <a class="navbar-item is-hidden-desktop-only" href="{{ signup_url }}">
+            Sign up
+          </a>
+          {% endif %}
+        </div>
+      </div>
+    </nav>
+  </div>
+  {% endblock header %}
+
+  {% block hero %}{% endblock hero %}
+
+  <section class="section">
+    <div class="container">
+      {% block messages %}
+      {% if messages %}
+      <div class="messages columns is-desktop">
+        <div class="column is-4 is-offset-4">
+          {% for message in messages %}
+          <div class="message {% if message.tags %}is-{{ message.tags|bulma_message_tag }}{% endif %}">
+            <div class="message-body">{{ message }}</div>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+      {% endif %}
+      {% endblock messages %}
+
+      {% block content_area %}
+      {% block content_title %}{% endblock content_title %}
+      {% block content %}{% endblock content %}
+      {% endblock content_area %}
+    </div>
+  </section>
+
+  {% block modal %}{% endblock modal %}
+
+  {% block footer %}
+  <footer class="footer">
+    <div class="container">
+      <div class="content has-text-centered">
+        <p>
+          <strong>Quest</strong> by <a href="http://spellbookpress.com">Spellbook Press</a>.
+        </p>
+      </div>
+    </div>
+  </footer>
+  {% endblock footer %}
+
+  {% block javascript %}
+  {% block extra_javascript %}{% endblock extra_javascript %}
+  {% endblock javascript %}
+</body>
+
+</html>

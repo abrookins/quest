@@ -6,14 +6,11 @@ class DataProvider extends Component {
   constructor (props) {
     super(props)
     this.state = {
-      model: props.model,
-      loaded: false,
       placeholder: 'Loading...'
     }
   }
 
   componentDidMount () {
-    let { model } = this.state
     axios.get(this.props.endpoint)
       .then(response => {
         if (response.status !== 200) {
@@ -22,12 +19,7 @@ class DataProvider extends Component {
         return response.data
       })
       .then((data) => {
-        if (this.state.model) {
-          model.load(data)
-          this.setState({ model: model, loaded: true })
-        } else {
-          this.setState({ model: data, loaded: true })
-        }
+        this.props.onLoad(data)
       })
   }
 
@@ -38,6 +30,7 @@ class DataProvider extends Component {
 }
 
 DataProvider.propTypes = {
+  onLoad: PropTypes.func.isRequired,
   endpoint: PropTypes.string.isRequired,
   render: PropTypes.func.isRequired,
   model: PropTypes.object

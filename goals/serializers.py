@@ -22,7 +22,7 @@ class UpdateTaskSerializer(serializers.ModelSerializer):
         # TODO: This should be somewhere else - maybe a service object.
         completed = validated_data.pop('completed')
         task = super().update(instance, validated_data)
-        status = TaskStatus.DONE if completed == 'true' else TaskStatus.INCOMPLETE
+        status = TaskStatus.DONE if completed else TaskStatus.INCOMPLETE
         task_status, _ = task.statuses.get_or_create(
             user=self.context['request'].user)
         task_status.status = status

@@ -80,22 +80,17 @@ class GoalView(UserOwnedGoalMixin, generics.RetrieveUpdateDestroyAPIView):
     def delete(self, request, *args, **kwargs):
         instance = self.get_object()
         if instance.is_public:
-            # TODO: Service object
             instance.clear_status_for_user(self.request.user)
-            return Response({'status': 'success'}, status=status.HTTP_200_OK)
+            return Response(status=status.HTTP_204_NO_CONTENT)
         return self.destroy(request, *args, **kwargs)
 
 
-class GoalStartView(UserOwnedGoalMixin, views.APIView):
+class GoalStartView(UserOwnedGoalMixin, generics.GenericAPIView):
     queryset = Goal.objects.all()
-
-    def get_object(self, pk):
-        goal = self.get_queryset().filter(pk=pk)
-        if not goal.exists():
-            raise Http404
-        return goal.first()
+    serializer_class = GoalSerializer
 
     def post(self, request, pk, *args, **kwargs):
-        goal = self.get_object(pk)
+        goal = self.get_object()
         goal.start(self.request.user)
-        return Response({'status': 'success'}, status=status.HTTP_200_OK)
+        serializer = self.get_serializer(goal)
+        return Response(serializer.data)
