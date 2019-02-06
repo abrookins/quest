@@ -154,7 +154,10 @@ class GoalDetailPage extends React.Component {
   }
 
   saveGoal (newName) {
-    Goals.update(this.goal.id, newName).then(this.setState({ editingGoal: false }))
+    Goals.update(this.state.goal.id, newName).then((response) => {
+      this.setState({ goal: response.data })
+      this.setState({ editingGoal: false })
+    })
   }
 
   cancelEditGoal () {
@@ -162,8 +165,9 @@ class GoalDetailPage extends React.Component {
   }
 
   render () {
-    let footer
+    let newTaskInput
     let main
+    let footer
 
     if (!this.state.loaded) {
       return <div></div>
@@ -187,6 +191,7 @@ class GoalDetailPage extends React.Component {
         <Task
           key={task.id}
           task={task}
+          goal={this.state.goal}
           onToggle={this.toggleTask.bind(this, task)}
           onDestroy={this.destroyTask.bind(this, task)}
           onEdit={this.editTask.bind(this, task)}
@@ -203,14 +208,15 @@ class GoalDetailPage extends React.Component {
 
     const completedCount = tasks.length - activeTaskCount
 
-    if (activeTaskCount || completedCount) {
-      footer =
-        <TasksFooter
-          count={activeTaskCount}
-          completedCount={completedCount}
-          mode={this.state.mode}
-          onClearCompleted={this.clearCompleted}
-        />
+    if (!this.state.goal.is_public) {
+      newTaskInput = <input
+        className="new-task"
+        placeholder="Add a new task for this goal"
+        value={this.state.newTask}
+        onKeyDown={this.handleNewTaskKeyDown}
+        onChange={this.handleTaskChange}
+        autoFocus={true}
+      />
     }
 
     if (tasks.length) {
@@ -233,19 +239,22 @@ class GoalDetailPage extends React.Component {
       )
     }
 
+    if (activeTaskCount || completedCount) {
+      footer =
+        <TasksFooter
+          count={activeTaskCount}
+          completedCount={completedCount}
+          mode={this.state.mode}
+          onClearCompleted={this.clearCompleted}
+        />
+    }
+
     return (
       <div>
         <header className="header">
           <GoalTitle name={this.state.goal.name} editing={this.state.editingGoal}
-            onEdit={this.editGoal} onSave={this.saveGoal} onCancel={this.cancelEditGoal} />
-          <input
-            className="new-task"
-            placeholder="Add a new task for this goal"
-            value={this.state.newTask}
-            onKeyDown={this.handleNewTaskKeyDown}
-            onChange={this.handleTaskChange}
-            autoFocus={true}
-          />
+            onEdit={this.editGoal} onSave={this.saveGoal} onCancel={this.cancelEditGoal}/>
+          {newTaskInput}
         </header>
         {main}
         {footer}
@@ -259,4 +268,4 @@ GoalDetailPage.propTypes = {
 }
 
 const wrapper = document.getElementById('goal')
-wrapper ? ReactDOM.render(<GoalDetailPage goalId={goalId} />, wrapper) : null
+wrapper ? ReactDOM.render(<GoalDetailPage goalId={goalId}/>, wrapper) : null

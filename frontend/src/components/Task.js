@@ -47,6 +47,12 @@ class Task extends React.Component {
   }
 
   render () {
+    let destroyButton
+
+    if (!this.props.goal.is_public) {
+      destroyButton = <button className='destroy' onClick={this.props.onDestroy}/>
+    }
+
     return (
       <li className={classNames({
         completed: this.props.task.completed,
@@ -62,7 +68,7 @@ class Task extends React.Component {
           <label onDoubleClick={this.handleEdit}>
             {this.props.task.name}
           </label>
-          <button className='destroy' onClick={this.props.onDestroy}/>
+          {destroyButton}
         </div>
         <input
           ref='editField'
@@ -84,7 +90,8 @@ Task.propTypes = {
   onEdit: PropTypes.func.isRequired,
   onCancel: PropTypes.func.isRequired,
   onToggle: PropTypes.func.isRequired,
-  editing: PropTypes.bool.isRequired
+  editing: PropTypes.bool.isRequired,
+  goal: PropTypes.object.isRequired
 }
 
 export default Task

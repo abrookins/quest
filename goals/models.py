@@ -12,8 +12,9 @@ class Task(models.Model):
         return self.statuses.filter(user=user, status=TaskStatus.DONE).exists()
 
     def complete(self, user):
-        completion = self.statuses.get_or_create(user=user)
-        completion.update(status=TaskStatus.DONE)
+        status, _ = self.statuses.get_or_create(user=user)
+        status.status = TaskStatus.DONE
+        status.save()
 
     def __str__(self):
         return 'Task: {}'.format(self.name)
