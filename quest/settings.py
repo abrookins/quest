@@ -33,6 +33,7 @@ INSTALLED_APPS = [
     'goals.apps.GoalsConfig',
     'accounts.apps.AccountsConfig',
     'frontend.apps.FrontendConfig',
+    'analytics.apps.AnalyticsConfig',
     'bulma',  # Comes first to override Django admin auth templates.
     'django.contrib.auth',
     'django.contrib.admin',
@@ -41,15 +42,19 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'debug_toolbar',
+    'silk',
 ]
 
 MIDDLEWARE = [
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
+    'silk.middleware.SilkyMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
@@ -134,3 +139,5 @@ REST_FRAMEWORK = {
 }
 
 CSRF_COOKIE_NAME = "csrftoken"
+
+INTERNAL_IPS = ('127.0.0.1',)

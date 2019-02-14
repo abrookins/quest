@@ -1,4 +1,6 @@
 from rest_framework import serializers
+
+from analytics.models import Event
 from goals.models import Goal, Task, TaskStatus
 
 
@@ -58,14 +60,23 @@ class GoalSerializer(serializers.ModelSerializer):
     percentage_complete = serializers.SerializerMethodField(
         'calc_percentage_complete')
     user_has_started = serializers.SerializerMethodField('has_started')
+    total_have_started = serializers.SerializerMethodField('total_started')
+    total_views = serializers.SerializerMethodField('views')
 
     class Meta:
         model = Goal
         fields = ('id', 'name', 'description', 'slug', 'tasks',
-                  'percentage_complete', 'user_has_started', 'is_public')
+                  'percentage_complete', 'user_has_started', 'total_have_started',
+                  'is_public', 'total_views')
 
     def calc_percentage_complete(self, goal):
         return goal.percentage_complete(self.context['request'].user)
 
     def has_started(self, goal):
         return goal.has_started(self.context['request'].user)
+
+    def total_started(self, goal):
+        return goal.tasks.filter(statuses__status=TaskStatus.INCOMPLETE).count()
+
+    def views(self, goal):
+        return Event.objects.filter(data__goal=goal.id, name='user.viewed')

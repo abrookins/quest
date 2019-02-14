@@ -1,6 +1,7 @@
-from django.http import Http404
-from rest_framework import generics, views, status
+from rest_framework import generics, status
 from rest_framework.response import Response
+
+from analytics.models import Event
 from goals.models import Goal, Task, TaskStatus
 from goals.serializers import (GoalSerializer, NewGoalSerializer,
                                TaskSerializer, NewTaskSerializer,
@@ -65,14 +66,15 @@ class GoalListCreateView(UserOwnedGoalMixin, generics.ListCreateAPIView):
         return queryset
 
 
-class GoalView(UserOwnedGoalMixin, generics.RetrieveUpdateDestroyAPIView):
+# tag::GoalView[]
+class GoalView(UserOwnedGoalMixin, generics.RetrieveUpdateDestroyAPIView):  # <1>
     queryset = Goal.objects.all()
     serializer_class = GoalSerializer
 
     def get_serializer_class(self):
         if self.request.method == 'PUT':
             return NewGoalSerializer
-        return GoalSerializer
+        return GoalSerializer # <2>
 
     def get_serializer_context(self):
         return {'request': self.request}
@@ -83,6 +85,7 @@ class GoalView(UserOwnedGoalMixin, generics.RetrieveUpdateDestroyAPIView):
             instance.clear_status_for_user(self.request.user)
             return Response(status=status.HTTP_204_NO_CONTENT)
         return self.destroy(request, *args, **kwargs)
+# end::GoalView[]
 
 
 class GoalStartView(UserOwnedGoalMixin, generics.GenericAPIView):
