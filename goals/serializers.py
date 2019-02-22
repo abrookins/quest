@@ -55,13 +55,14 @@ class NewGoalSerializer(serializers.ModelSerializer):
         fields = ('id', 'user', 'name')
 
 
+# tag::GoalSerializer[]
 class GoalSerializer(serializers.ModelSerializer):
     tasks = TaskSerializer(many=True)
     percentage_complete = serializers.SerializerMethodField(
         'calc_percentage_complete')
     user_has_started = serializers.SerializerMethodField('has_started')
     total_have_started = serializers.SerializerMethodField('total_started')
-    total_views = serializers.SerializerMethodField('views')
+    total_views = serializers.SerializerMethodField('views') # <2>
 
     class Meta:
         model = Goal
@@ -79,4 +80,5 @@ class GoalSerializer(serializers.ModelSerializer):
         return goal.tasks.filter(statuses__status=TaskStatus.INCOMPLETE).count()
 
     def views(self, goal):
-        return Event.objects.filter(data__goal=goal.id, name='user.viewed')
+        return Event.objects.filter(data__goal=goal.id, name='user.viewed') # <1>
+# end::GoalSerializer[]

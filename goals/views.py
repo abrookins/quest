@@ -1,7 +1,6 @@
 from rest_framework import generics, status
 from rest_framework.response import Response
 
-from analytics.models import Event
 from goals.models import Goal, Task, TaskStatus
 from goals.serializers import (GoalSerializer, NewGoalSerializer,
                                TaskSerializer, NewTaskSerializer,
