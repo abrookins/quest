@@ -65,15 +65,22 @@ class GoalListCreateView(UserOwnedGoalMixin, generics.ListCreateAPIView):
         return queryset
 
 
-# tag::GoalView[]
-class GoalView(UserOwnedGoalMixin, generics.RetrieveUpdateDestroyAPIView):  # <1>
+# tag::goal-view-a[]
+class view(UserOwnedGoalMixin, generics.RetrieveUpdateDestroyAPIView):  # <1>
+    # ...
+# end::goal-view-a[]
     queryset = Goal.objects.all()
     serializer_class = GoalSerializer
 
+# tag::goal-view-b[]
     def get_serializer_class(self):
+# end::goal-view-b[]
         if self.request.method == 'PUT':
             return NewGoalSerializer
+# tag::goal-view-c[]
+        # ...
         return GoalSerializer # <2>
+# end::goal-view-c[]
 
     def get_serializer_context(self):
         return {'request': self.request}
@@ -84,7 +91,6 @@ class GoalView(UserOwnedGoalMixin, generics.RetrieveUpdateDestroyAPIView):  # <1
             instance.clear_status_for_user(self.request.user)
             return Response(status=status.HTTP_204_NO_CONTENT)
         return self.destroy(request, *args, **kwargs)
-# end::GoalView[]
 
 
 class GoalStartView(UserOwnedGoalMixin, generics.GenericAPIView):

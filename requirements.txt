@@ -1,14 +1,13 @@
 Django==2.1.4
-psycopg2==2.7.6.1
+psycopg2-binary==2.7.7
 Pillow==5.3.0
 django-bulma==0.5.3.0
 djangorestframework==3.9.0
-
 newrelic
-
 pytest==4.0.2
 pytest-django==3.4.4
 pylint
+pylint-django
 yapf
 django-debug-toolbar
 django-silk
