@@ -66,7 +66,7 @@ class GoalListCreateView(UserOwnedGoalMixin, generics.ListCreateAPIView):
 
 
 # tag::goal-view-a[]
-class view(UserOwnedGoalMixin, generics.RetrieveUpdateDestroyAPIView):  # <1>
+class GoalView(UserOwnedGoalMixin, generics.RetrieveUpdateDestroyAPIView):  # <1>
     # ...
 # end::goal-view-a[]
     queryset = Goal.objects.all()
