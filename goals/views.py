@@ -66,21 +66,15 @@ class GoalListCreateView(UserOwnedGoalMixin, generics.ListCreateAPIView):
 
 
 # tag::goal-view-a[]
-class GoalView(UserOwnedGoalMixin, generics.RetrieveUpdateDestroyAPIView):  # <1>
-    # ...
-# end::goal-view-a[]
+class GoalView(UserOwnedGoalMixin, generics.RetrieveUpdateDestroyAPIView):
     queryset = Goal.objects.all()
-    serializer_class = GoalSerializer
+    serializer_class = GoalSerializer  # <1>
+# end::goal-view-a[]
 
-# tag::goal-view-b[]
     def get_serializer_class(self):
-# end::goal-view-b[]
         if self.request.method == 'PUT':
             return NewGoalSerializer
-# tag::goal-view-c[]
-        # ...
-        return GoalSerializer # <2>
-# end::goal-view-c[]
+        return GoalSerializer
 
     def get_serializer_context(self):
         return {'request': self.request}
