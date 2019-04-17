@@ -10,11 +10,12 @@ class Account(models.Model):
 
 # tag::UserProfile[]
 class UserProfile(models.Model):
-    user = models.ForeignKey(
+    user = models.OneToOneField(
         User,
+        related_name='profile',
         help_text="The user to whom this profile belongs",
         on_delete=models.CASCADE)
-    account = models.ForeignKey(  # <1>
+    account = models.OneToOneField(  # <1>
         Account,
         help_text="The account to which this user belongs",
         on_delete=models.DO_NOTHING)

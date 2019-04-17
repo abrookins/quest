@@ -89,5 +89,5 @@ class GoalSerializer(serializers.ModelSerializer):
         return Event.objects.filter(
             name='user.viewed',
             data__goal=goal.id
-        ) # <1>
+        ).values() # <1>
 # end::goal-serializer-c[]

@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Analytics Events{% endblock %}
+
+{% block content %}
+  <h1 class="title">Analytics Events</h1>
+
+  <table class="table">
+    <thead>
+      <tr>
+        <td>Event</td>
+        <td>User</td>
+        <td>Account</td>
+      </tr>
+    </thead>
+  {% for event in events %}
+    <tr>
+      <td>{{ event.name }}</td>
+      <td>{{ event.user.username }}</td>
+      <td>{{ event.user.profile.account.name }}</td>  <!--<1>-->
+    </tr>
+  {% endfor %}
+  </table>
+{% endblock content %}
