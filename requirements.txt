@@ -1,13 +1,19 @@
-Django==2.1.4
-psycopg2-binary==2.7.7
-Pillow==5.3.0
-django-bulma==0.5.3.0
-djangorestframework==3.9.0
-newrelic
-pytest==4.0.2
-pytest-django==3.4.4
-pylint
-pylint-django
-yapf
-django-debug-toolbar
-django-silk
+Django==3.0
+django-bulma==0.8.0
+django-debug-toolbar==2.2
+django-model-utils==2.0.3
+django-quiz-app==0.5.1
+django-silk==4.0.1
+djangorestframework==3.11.0
+newrelic==5.14.1.144
+Pillow==2.5.0
+pluggy==0.13.1
+psycopg2-binary==2.8.5
+
+# TODO: Move into separate file.
+# Dev dependencies.
+pylint==2.5.3
+pylint-django==2.1.0
+pytest==5.4.3
+pytest-django==3.9.0
+yapf==0.30.0

@@ -1,0 +1,23 @@
+version: "3.8"
+
+services:
+  db:
+    image: postgres:12
+    restart: always
+    environment:
+      POSTGRES_USER: quest
+      POSTGRES_PASSWORD: test
+      POSTGRES_DB: quest
+
+  web:
+    build: .
+    ports:
+      - "8000:8000"
+    command: ["python", "manage.py", "runserver", "0.0.0.0:8000"]
+    environment:
+      QUEST_DATABASE_HOST: db
+
+  test:
+    build: .
+    environment:
+      QUEST_DATABASE_HOST: db

@@ -12,6 +12,10 @@ https://docs.djangoproject.com/en/2.1/ref/settings/
 
 import os
 
+# Read from the environment so we can support Docker or local dev.
+DATABASE_HOST = os.environ.get("QUEST_DATABASE_HOST", "localhost")
+DATABASE_PASSWORD = os.environ.get("QUEST_DATABASE_PASSWORD", "test")
+
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -86,8 +90,8 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'quest',
         'USER': 'quest',
-        'PASSWORD': 'test',
-        'HOST': 'localhost'
+        'PASSWORD': DATABASE_PASSWORD,
+        'HOST': DATABASE_HOST
     }
 }
 
