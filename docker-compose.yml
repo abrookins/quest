@@ -13,9 +13,20 @@ services:
     build: .
     ports:
       - "8000:8000"
-    command: ["python", "manage.py", "runserver", "0.0.0.0:8000"]
+    command: "make runserver"
     environment:
       QUEST_DATABASE_HOST: db
+    depends_on:
+      - "db"
+    volumes:
+      - ".:/usr/src/app"
+
+  static:
+    image: node:latest
+    command: "make watch_static"
+    working_dir: /usr/src/app
+    volumes:
+      - ".:/usr/src/app"
 
   test:
     build: .

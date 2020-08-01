@@ -64,7 +64,7 @@ class GoalTitle extends React.Component {
             onKeyDown={this.handleKeyDown}
           />
           <div className="level-right">
-            <button className="edit button is-large">Save</button>
+            <button className="edit button is-large" onClick={this.handleSubmit}>Save</button>
             <button className="view button" onClick={this.handleEdit}>Edit</button>
           </div>
         </div>

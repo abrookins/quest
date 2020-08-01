@@ -77,7 +77,7 @@ class Homepage extends React.Component {
       <div className="learning-goals">
         <h2 className="subtitle">Your Learning Goals</h2>
         <GoalsList moreUrl="/goals" goals={yourGoals} handleDelete={this.handleDelete}
-          handleStart={this.handleStart}/>
+          handleStart={this.handleStart} showAddButton/>
       </div>
 
       {recommended}

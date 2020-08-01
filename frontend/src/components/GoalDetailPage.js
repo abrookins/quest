@@ -211,7 +211,7 @@ class GoalDetailPage extends React.Component {
     if (!this.state.goal.is_public) {
       newTaskInput = <input
         className="new-task"
-        placeholder="Add a new task for this goal"
+        placeholder="Add a new task for this learning goal"
         value={this.state.newTask}
         onKeyDown={this.handleNewTaskKeyDown}
         onChange={this.handleTaskChange}

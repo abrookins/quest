@@ -1,6 +1,7 @@
 from rest_framework import generics, status
 from rest_framework.response import Response
 
+from analytics.models import Event
 from goals.models import Goal, Task, TaskStatus
 from goals.serializers import (GoalSerializer, NewGoalSerializer,
                                TaskSerializer, NewTaskSerializer,
@@ -39,6 +40,11 @@ class TaskView(UserOwnedTaskMixin, generics.RetrieveUpdateDestroyAPIView):
 
 
 class GoalListCreateView(UserOwnedGoalMixin, generics.ListCreateAPIView):
+    def perform_create(self, serializer):
+        goal = serializer.save()
+        Event.objects.create(name="goal_created", user=goal.user,
+                             data=serializer.data)
+
     def get_serializer_class(self):
         if self.request.method == 'POST':
             return NewGoalSerializer
