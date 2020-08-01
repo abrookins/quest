@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 
 const GoalSummary = (props) => {
   const showProgress = props.goal.user_has_started || !props.goal.is_public
-  const progress = showProgress ? <div className=''>
+  const progress = showProgress ? <div className='progress-container'>
     <progress className='progress is-primary' value={props.goal.percentage_complete}
       max='100'>
       {props.goal.percentage_complete === 100 ? (

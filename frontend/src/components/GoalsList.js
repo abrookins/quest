@@ -21,10 +21,12 @@ class GoalsList extends React.Component {
     ) : (
       <div>
         {moreLink}
-        {this.props.goals.map(
-          goal => <GoalSummary goal={goal} handleStart={this.props.handleStart.bind(this, goal.id)}
-            handleDelete={this.props.handleDelete.bind(this, goal.id)} key={key(goal)} />
-        )}
+        <div className="learning-goals">
+          {this.props.goals.map(
+            goal => <GoalSummary goal={goal} handleStart={this.props.handleStart.bind(this, goal.id)}
+              handleDelete={this.props.handleDelete.bind(this, goal.id)} key={key(goal)} />
+          )}
+        </div>
         {addButton}
       </div>
     )

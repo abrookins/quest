@@ -64,11 +64,9 @@ class GoalsListPage extends React.Component {
     const yourGoals = this.state.goals.filter((goal) => goal.user_has_started || !goal.is_public)
 
     return <div className='your-goals'>
-      <div className="learning-goals">
-        <h1 className="title">Your Learning Goals</h1>
-        <GoalsList goals={yourGoals} handleDelete={this.handleDelete}
-          handleStart={this.handleStart}/>
-      </div>
+      <h1 className="title">Your Learning Goals</h1>
+      <GoalsList goals={yourGoals} handleDelete={this.handleDelete}
+        handleStart={this.handleStart} showAddButton/>
     </div>
   }
 }

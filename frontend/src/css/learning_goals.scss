@@ -4,6 +4,9 @@
 
 .learning-goals {
   overflow: auto;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px,1fr));
+  grid-gap: 0.5em;
 }
 
 .goal-button {
@@ -16,6 +19,42 @@
   overflow: hidden;
 }
 
+.progress-container {
+  margin: 1rem;
+}
+
 h4 {
   overflow: hidden;
+}
+
+.row-card {
+  height: max-content
+  progress {
+    border-radius: 0;
+    padding: 2rem;
+  }
+}
+
+.learning-goal {
+  .content {
+    min-height: 100px;
+  }
+
+/*  .card-header-icon {*/
+    //display: none;
+  //}
+
+  //&.card:hover {
+    //.card-header-icon {
+      //display: block;
+    //}
+  /*}*/
+}
+
+.learning-nav {
+  padding: 3.5rem 1.5rem 0;
+}
+
+.learning-goals {
+  padding: 2rem 1rem 2rem;
 }
