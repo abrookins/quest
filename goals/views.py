@@ -25,6 +25,11 @@ class TaskListCreateView(UserOwnedTaskMixin, generics.ListCreateAPIView):
     queryset = Task.objects.all()
     serializer_class = NewTaskSerializer
 
+    def perform_create(self, serializer):
+        task = serializer.save()
+        Event.objects.create(name="task_created", user=task.goal.user,
+                             data=serializer.data)
+
 
 class TaskView(UserOwnedTaskMixin, generics.RetrieveUpdateDestroyAPIView):
     queryset = Task.objects.all()
@@ -44,6 +49,10 @@ class GoalListCreateView(UserOwnedGoalMixin, generics.ListCreateAPIView):
         goal = serializer.save()
         Event.objects.create(name="goal_created", user=goal.user,
                              data=serializer.data)
+
+    def get(self, request, *args, **kwargs):
+        Event.objects.create(name="goal_list_viewed", user=request.user)
+        return self.list(request, *args, **kwargs)
 
     def get_serializer_class(self):
         if self.request.method == 'POST':
@@ -76,6 +85,12 @@ class GoalView(UserOwnedGoalMixin, generics.RetrieveUpdateDestroyAPIView):
     queryset = Goal.objects.all()
     serializer_class = GoalSerializer  # <1>
 # end::goal-view-a[]
+
+    def get(self, request, *args, **kwargs):
+        instance = self.get_object()
+        Event.objects.create(name="goal_viewed", user=request.user,
+                             data={"goal_id": instance.id})
+        return super().get(request, *args, **kwargs)
 
     def get_serializer_class(self):
         if self.request.method == 'PUT':
