@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.humanize',
     'rest_framework',
     'debug_toolbar',
     #'silk',
@@ -145,3 +146,8 @@ REST_FRAMEWORK = {
 CSRF_COOKIE_NAME = "csrftoken"
 
 INTERNAL_IPS = ('127.0.0.1', '192.168.78.132', '192.168.78.1')
+
+# How many analytics events to show on a page.
+EVENTS_PER_PAGE = 10
+
+DARK_SKY_API_KEY = os.environ.get('DARK_SKY_API_KEY', "")

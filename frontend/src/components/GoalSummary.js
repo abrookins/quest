@@ -16,6 +16,12 @@ const GoalSummary = (props) => {
   </div> : <button className="is-info is-small button is-fullwidth"
     onClick={props.handleStart}>Start</button>
 
+	const tasks = props.goal.tasks.map((task) => {
+				return (
+					<li>{task.name}</li>
+				)
+			}, this)
+
   return <div className="learning-goal row-card card">
     <div className="card-header">
       <p className="card-header-title">
@@ -27,7 +33,9 @@ const GoalSummary = (props) => {
     </div>
     <div className="card-content">
       <article className="content">
-        <p>{props.goal.description ? props.goal.description : 'This is going to be awesome.'}</p>
+				<ul>
+				{tasks}
+				</ul>
       </article>
     </div>
     {progress}

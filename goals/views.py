@@ -27,8 +27,7 @@ class TaskListCreateView(UserOwnedTaskMixin, generics.ListCreateAPIView):
 
     def perform_create(self, serializer):
         task = serializer.save()
-        Event.objects.create(name="task_created", user=task.goal.user,
-                             data=serializer.data)
+        Event.objects.create(name="task_created", data=serializer.data)
 
 
 class TaskView(UserOwnedTaskMixin, generics.RetrieveUpdateDestroyAPIView):
@@ -47,11 +46,11 @@ class TaskView(UserOwnedTaskMixin, generics.RetrieveUpdateDestroyAPIView):
 class GoalListCreateView(UserOwnedGoalMixin, generics.ListCreateAPIView):
     def perform_create(self, serializer):
         goal = serializer.save()
-        Event.objects.create(name="goal_created", user=goal.user,
-                             data=serializer.data)
+        Event.objects.create(name="goal_created", data=serializer.data)
 
     def get(self, request, *args, **kwargs):
-        Event.objects.create(name="goal_list_viewed", user=request.user)
+        Event.objects.create(name="goal_list_viewed",
+                             data={"user_id": request.user.id})
         return self.list(request, *args, **kwargs)
 
     def get_serializer_class(self):
@@ -64,8 +63,12 @@ class GoalListCreateView(UserOwnedGoalMixin, generics.ListCreateAPIView):
         is_public = self.request.query_params.get('is_public', None)
         has_started = self.request.query_params.get('has_started', None)
 
-        if is_public is not None:
-            queryset = queryset.filter(is_public=is_public == 'true')
+        if self.request.user.is_authenticated:
+            queryset = queryset.filter(user=self.request.user)
+            if is_public is not None:
+                queryset = queryset.filter(is_public=is_public == 'true')
+        else:
+            queryset = queryset.filter(is_public=True)
 
         if has_started is not None:
             if has_started == 'true':
@@ -88,8 +91,9 @@ class GoalView(UserOwnedGoalMixin, generics.RetrieveUpdateDestroyAPIView):
 
     def get(self, request, *args, **kwargs):
         instance = self.get_object()
-        Event.objects.create(name="goal_viewed", user=request.user,
-                             data={"goal_id": instance.id})
+        Event.objects.create(name="goal_viewed",
+                             data={"goal_id": instance.id,
+                                   "user_id": request.user.id})
         return super().get(request, *args, **kwargs)
 
     def get_serializer_class(self):

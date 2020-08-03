@@ -1,3 +1,7 @@
-from django.contrib import admin
+from quest.admin import admin_site
 
-# Register your models here.
+from .models import Goal, Task, TaskStatus
+
+admin_site.register(Goal)
+admin_site.register(Task)
+admin_site.register(TaskStatus)

@@ -21,7 +21,7 @@ class Homepage extends React.Component {
     Goals.getAll()
       .catch(() => {
         this.setState({ placeholder: 'Something went wrong' })
-      })
+ className="hidden"      })
       .then(response => this.setState({ goals: response.data, loaded: true }))
   }
 

@@ -3,6 +3,9 @@
 dev:
 		docker-compose up -d --build
 
+shell:
+		docker-compose exec web ./manage.py shell
+
 test:	dev
 		docker-compose run --rm test pytest
 
