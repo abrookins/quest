@@ -1,14 +1,21 @@
+from django.conf import settings
 from django.db import models
-
-from quest.models import QuestModel
 from django.db.models import Q
 
+from quest.models import QuestModel
+
+
+# tag::Task[]
 
 class Task(QuestModel):
     goal = models.ForeignKey(
         'Goal', on_delete=models.CASCADE, related_name='tasks')
     name = models.CharField(help_text="The name of the goal", max_length=255)
     url = models.URLField(help_text="The URL of this task")
+
+    # ...
+
+# end::Task[]
 
     def is_completed(self, user):
         return self.statuses.filter(user=user, status=TaskStatus.DONE).exists()
@@ -22,27 +29,43 @@ class Task(QuestModel):
         return 'Task: {}'.format(self.name)
 
 
+# tag::TaskStatus[]
+class TaskStatusManager(models.Manager):
+    def completed(self):
+        return self.filter(status=TaskStatus.DONE)
+
+    def started(self):
+        return self.filter(status=TaskStatus.STARTED)
+
+
 class TaskStatus(QuestModel):
-    INCOMPLETE = 1
+    STARTED = 1
     DONE = 2
     CHOICES = (
-        (INCOMPLETE, 'Incomplete'),
+        (STARTED, 'Started'),
         (DONE, 'Done'),
     )
 
     task = models.ForeignKey(
         'Task', on_delete=models.CASCADE, related_name='statuses')
     user = models.ForeignKey(
-        'auth.User', on_delete=models.CASCADE, related_name='task_statuses')
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE,
+        related_name='task_statuses')
     status = models.PositiveSmallIntegerField(
         help_text="The status of this task", default=False, choices=CHOICES)
+
+    objects = TaskStatusManager()
+
+    # ...
+
+    # end::TaskStatus[]
 
     def complete(self):
         self.status = self.DONE
         self.save()
 
     def status_text(self):
-        if self.status == self.INCOMPLETE:
+        if self.status == self.STARTED:
             return 'incomplete'
         elif self.status == self.DONE:
             return 'done'
@@ -56,9 +79,11 @@ class TaskStatus(QuestModel):
         unique_together = ('user', 'task')
 
 
+# tag::Goal[]
+
 class Goal(QuestModel):
     user = models.ForeignKey(
-        'auth.User',
+        settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
         related_name='goals',
         null=True,
@@ -74,6 +99,10 @@ class Goal(QuestModel):
         default=False,
         help_text="Whether or not this goal is publicly accessible")
 
+    # ...
+
+    # end::Goal[]
+
     def __str__(self):
         return self.name
 
@@ -85,17 +114,16 @@ class Goal(QuestModel):
         return (completed / self.tasks.count()) * 100
 
     def has_started(self, user):
-        # TODO: I don't have to use Q here anymore.
         return self.tasks.filter(
-            Q(statuses__status=TaskStatus.INCOMPLETE)
-            | Q(statuses__status=TaskStatus.INCOMPLETE),
+            Q(statuses__status=TaskStatus.STARTED)
+            | Q(statuses__status=TaskStatus.STARTED),
             statuses__user=user).exists()
 
     def start(self, user):
         first_task = self.tasks.first()
         if first_task:
             first_task.statuses.get_or_create(
-                status=TaskStatus.INCOMPLETE, user=user)
+                status=TaskStatus.STARTED, user=user)
 
     def clear_status_for_user(self, user):
         TaskStatus.objects.filter(

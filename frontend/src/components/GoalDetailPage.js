@@ -29,7 +29,7 @@ class GoalDetailPage extends React.Component {
       editingTask: null,
       editingGoal: false,
       newTask: '',
-			descriptionText: ''
+      descriptionText: ''
     }
 
     this.handleTaskChange = this.handleTaskChange.bind(this)
@@ -45,8 +45,8 @@ class GoalDetailPage extends React.Component {
     this.editGoal = this.editGoal.bind(this)
     this.saveGoal = this.saveGoal.bind(this)
     this.cancelEditGoal = this.cancelEditGoal.bind(this)
-		this.handleDescriptionSubmit = this.handleDescriptionSubmit.bind(this)
-		this.handleDescriptionChange = this.handleDescriptionChange.bind(this)
+    this.handleDescriptionSubmit = this.handleDescriptionSubmit.bind(this)
+    this.handleDescriptionChange = this.handleDescriptionChange.bind(this)
   }
 
   componentDidMount () {
@@ -138,7 +138,9 @@ class GoalDetailPage extends React.Component {
       })
     }, () => {
       let task = this.state.tasks.filter((task) => task.id === taskToSave.id)[0]
-      this.update(task).then(this.setState({ editingTask: null }))
+      Tasks.update(task).then((response) => {
+        this.setState({ editingTask: false })
+      })
     })
   }
 
@@ -156,14 +158,14 @@ class GoalDetailPage extends React.Component {
     this.setState({ editingGoal: true })
   }
 
-	handleDescriptionSubmit (event) {
-		this.goal.description = this.state.descriptionText
-		this.saveGoal()
-	}
+  handleDescriptionSubmit (event) {
+    this.goal.description = this.state.descriptionText
+    this.saveGoal()
+  }
 
   handleDescriptionChange (event) {
     if (this.state.editingGoal) {
-			this.setState({descriptionText: event.target.value})
+      this.setState({ descriptionText: event.target.value })
     }
   }
 
@@ -180,7 +182,6 @@ class GoalDetailPage extends React.Component {
 
   render () {
     let newTaskInput
-		let description
     let main
     let footer
 

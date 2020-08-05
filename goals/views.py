@@ -27,8 +27,8 @@ class TaskListCreateView(UserOwnedTaskMixin, generics.ListCreateAPIView):
 
     def perform_create(self, serializer):
         serializer.save()
-        Event.objects.create_user_event(name="task_created", data=serializer.data,
-                                        request=self.request)
+        Event.objects.create(name="task_created", data=serializer.data,
+                             user=self.request.user)
 
 
 class TaskView(UserOwnedTaskMixin, generics.RetrieveUpdateDestroyAPIView):
@@ -51,7 +51,8 @@ class GoalListCreateView(UserOwnedGoalMixin, generics.ListCreateAPIView):
                              data=serializer.data)
 
     def get(self, request, *args, **kwargs):
-        Event.objects.create(name="goal_list_viewed", user=request.user)
+        Event.objects.create(name="goal_list_viewed", user=request.user,
+                             data={})
         return self.list(request, *args, **kwargs)
 
     def get_serializer_class(self):
@@ -75,11 +76,11 @@ class GoalListCreateView(UserOwnedGoalMixin, generics.ListCreateAPIView):
             if has_started == 'true':
                 queryset = queryset.filter(
                     tasks__statuses__status=TaskStatus.DONE) | queryset.filter(
-                    tasks__statuses__status=TaskStatus.INCOMPLETE)
+                    tasks__statuses__status=TaskStatus.STARTED)
             else:
                 queryset = queryset.exclude(
                     tasks__statuses__status=TaskStatus.DONE).exclude(
-                    tasks__statuses__status=TaskStatus.INCOMPLETE)
+                    tasks__statuses__status=TaskStatus.STARTED)
 
         return queryset
 
@@ -94,7 +95,7 @@ class GoalView(UserOwnedGoalMixin, generics.RetrieveUpdateDestroyAPIView):
     def get(self, request, *args, **kwargs):
         instance = self.get_object()
         Event.objects.create(name="goal_viewed", data={"goal_id": instance.id},
-                             user=request.user, null=True, blank=True)
+                             user=request.user)
         return super().get(request, *args, **kwargs)
 
     def get_serializer_class(self):

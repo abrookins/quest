@@ -1,5 +1,6 @@
 from django.contrib.admin import AdminSite
 from django.db.models import Count, OuterRef, Subquery, IntegerField, Avg
+from django.db.models.functions import Coalesce
 from django.shortcuts import render
 from django.urls import path
 
@@ -64,7 +65,7 @@ class QuestAdminSite(AdminSite):
             output_field=IntegerField())  # <4>
 
         goals = Goal.objects.all().annotate(
-            completed_tasks=completed_tasks
+            completed_tasks=Coalesce(completed_tasks, 0)
         ).order_by('-completed_tasks')[:10]
 
         return render(request, "admin/goal_dashboard.html",
@@ -85,7 +86,7 @@ class QuestAdminSite(AdminSite):
             output_field=IntegerField())
 
         goals = Goal.objects.all().annotate(
-            completed_tasks=completed_tasks)
+            completed_tasks=Coalesce(completed_tasks, 0))
         top_ten_goals = goals.order_by('-completed_tasks')[:10]
         average_completions = goals.aggregate(
             Avg('completed_tasks'))  # <1>

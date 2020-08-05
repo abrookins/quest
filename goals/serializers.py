@@ -6,10 +6,16 @@ from goals.models import Goal, Task, TaskStatus
 
 class NewTaskSerializer(serializers.ModelSerializer):
     goal = serializers.PrimaryKeyRelatedField(queryset=Goal.objects.all())
+    completed = serializers.SerializerMethodField('is_completed', read_only=True)
 
     class Meta:
         model = Task
-        fields = ('id', 'name', 'goal')
+        fields = ('id', 'name', 'goal', 'completed')
+
+    def is_completed(self, task):
+        # TODO: New tasks are always "started" (incomplete) --
+        #  is there a better way to express that?
+        return False
 
 
 class UpdateTaskSerializer(serializers.ModelSerializer):
@@ -24,7 +30,7 @@ class UpdateTaskSerializer(serializers.ModelSerializer):
         # TODO: This should be somewhere else - maybe a service object.
         completed = validated_data.pop('completed')
         task = super().update(instance, validated_data)
-        status = TaskStatus.DONE if completed else TaskStatus.INCOMPLETE
+        status = TaskStatus.DONE if completed else TaskStatus.STARTED
         task_status, _ = task.statuses.get_or_create(
             user=self.context['request'].user)
         task_status.status = status
@@ -82,7 +88,7 @@ class GoalSerializer(serializers.ModelSerializer):
         return goal.has_started(self.context['request'].user)
 
     def total_started(self, goal):
-        return goal.tasks.filter(statuses__status=TaskStatus.INCOMPLETE).count()
+        return goal.tasks.filter(statuses__status=TaskStatus.STARTED).count()
 
 # tag::goal-serializer-c[]
     def views(self, goal):
