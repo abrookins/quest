@@ -4,7 +4,7 @@ from django.db.models.functions import Coalesce
 from django.shortcuts import render
 from django.urls import path
 
-from goals.models import Goal, TaskStatus
+from goals.models import Goal, TaskStatus, GoalSummary
 
 
 # tag::admin-site[]
@@ -17,6 +17,9 @@ class QuestAdminSite(AdminSite):
             path('goal_dashboard_sql/',
                  self.admin_view(
                      self.goals_dashboard_view_sql)),
+            path('goal_dashboard_materialized/',
+                 self.admin_view(
+                     self.goals_dashboard_view_materialized)),
             path('goal_dashboard_with_avg_completions/',
                  self.admin_view(
                      self.goals_avg_completions_view))
@@ -103,6 +106,10 @@ class QuestAdminSite(AdminSite):
             "other_stats": other_stats
         })
 # end::aggregations[]
+
+    def goals_dashboard_view_materialized(self, request):
+        return render(request, "admin/goal_dashboard_materialized.html",
+                      {"summaries": GoalSummary.objects.all()})
 
 
 admin_site = QuestAdminSite()

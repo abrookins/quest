@@ -128,3 +128,15 @@ class Goal(QuestModel):
     def clear_status_for_user(self, user):
         TaskStatus.objects.filter(
             task__in=self.tasks.all(), user=user).delete()
+
+
+class GoalSummary(models.Model):
+    goal = models.ForeignKey(
+        'Goal', on_delete=models.CASCADE, related_name='summaries',
+        primary_key=True)
+    completed_tasks = models.PositiveSmallIntegerField(
+        help_text="Completed tasks for this goal", default=0)
+    date = models.DateTimeField()
+
+    class Meta:
+        managed = False

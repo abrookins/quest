@@ -1,0 +1,53 @@
+{% extends "admin/index.html" %}
+{% load i18n %}
+{% load humanize %}
+
+{% block bodyclass %}{{ block.super }} app-{{ app_label }}{% endblock %}
+
+{% if not is_popup %}
+  {% block breadcrumbs %}
+    <div class="breadcrumbs">
+      <a href="{% url 'admin:index' %}">{% trans 'Home' %}</a>
+      &rsaquo;
+      Goals Dashboard
+    </div>
+  {% endblock %}
+{% endif %}
+
+{% block content %}
+  <h2>Top Ten Goals by Number of Completed Tasks</h2>
+  <div class="results">
+    {% if average_completions %}
+      <emphasis>Average completions: </emphasis> {{ average_completions | intcomma }}
+    {% endif %}
+    <table>
+      <thead>
+      <tr>
+        <th>
+          <div class="text">
+            <a href="#">Goal</a>
+          </div>
+        </th>
+        <th>
+          <div class="text">
+            <a href="#">Completed Tasks</a>
+          </div>
+        </th>
+      </tr>
+      </thead>
+
+      <tbody>
+      {% for summary in summaries %}
+        <tr class="{% cycle 'row1' 'row2' %}">
+          <td> {{ summary.goal.name }} </td>
+          <td> {{ summary.completed_tasks | intcomma }} </td>
+        </tr>
+      {% endfor %}
+      </tbody>
+
+    </table>
+  </div>
+
+{% endblock content %}
+
+{% block sidebar %}{% endblock %}
