@@ -14,9 +14,8 @@ class Event(QuestModel):
                              null=True, blank=True)
     data = JSONField()
 
-    # Uncomment to add an index!
-    # class Meta:
-    #     indexes = [
-    #         models.Index(fields=['name']),  # <1>
-    #     ]
+    class Meta:
+        indexes = [
+            models.Index(fields=['name'], name="analytics_event_name_idx"),  # <1>
+        ]
 # end::Event[]
