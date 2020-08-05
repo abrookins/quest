@@ -10,8 +10,11 @@ from django.db.models import F, Func, Value
 from django.db.models.expressions import RawSQL
 from django.http import HttpResponseBadRequest
 from django.shortcuts import render
+from rest_framework import generics
+from rest_framework.pagination import CursorPagination
 
 from analytics.models import Event
+from analytics.serializers import EventSerializer
 
 log = logging.getLogger(__name__)
 
@@ -281,3 +284,14 @@ def increment_all_event_counts_with_func():
     incr_by_one = JsonbFieldIncrementer('data', 'count', 1)
     Event.objects.all().update(data=incr_by_one).limit(10)
 # end::update_all_events_func[]
+
+
+class Pagination(CursorPagination):
+    page_size = 10
+    ordering = '-created_at'
+
+
+class EventListView(generics.ListAPIView):
+    queryset = Event.objects.all()
+    serializer_class = EventSerializer
+    pagination_class = Pagination

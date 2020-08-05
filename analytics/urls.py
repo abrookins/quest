@@ -9,5 +9,7 @@ urlpatterns = [
     path('analytics_keyset_pg', views.events_keyset_paginated_postgres,
          name="events_keyset_pg"),
     path('analytics_keyset_generic', views.events_keyset_paginated_generic,
-         name="events_keyset_generic")
+         name="events_keyset_generic"),
+    path('analytics/api', views.EventListView.as_view(),
+         name="events_api")
 ]

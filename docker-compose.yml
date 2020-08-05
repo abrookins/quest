@@ -4,6 +4,8 @@ services:
   db:
     image: postgres:12
     restart: always
+    ports:
+      - "15432:5432"
     environment:
       POSTGRES_USER: quest
       POSTGRES_PASSWORD: test
