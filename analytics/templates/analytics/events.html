@@ -12,13 +12,15 @@
         <td>Event</td>
         <td>User</td>
         <td>Account</td>
+        <td>Data</td>
       </tr>
     </thead>
   {% for event in events %}
     <tr>
       <td>{{ event.name }}</td>
       <td>{{ event.user.username }}</td>
-      <td>{{ event.user.profile.account.name }}</td>  <!--<1>-->
+      <td>{{ event.user.profile.account.name }}</td>
+      <td>{{ event.data }}</td>
     </tr>
   {% endfor %}
   </table>

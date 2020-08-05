@@ -28,7 +28,7 @@ SECRET_KEY = 'u06zoy2&g+le1tr21om=j(545ct$j$fmo01(tpl@iki8h!y2_f'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'work', '192.168.56.101', 'revenant', 'vm']
+ALLOWED_HOSTS = ['localhost', '127.0.0.1']
 
 # Application definition
 
@@ -59,7 +59,6 @@ MIDDLEWARE = [
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
-    #'silk.middleware.SilkyMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
@@ -145,7 +144,7 @@ REST_FRAMEWORK = {
 
 CSRF_COOKIE_NAME = "csrftoken"
 
-INTERNAL_IPS = ('127.0.0.1', '192.168.78.132', '192.168.78.1')
+INTERNAL_IPS = ('127.0.0.1', '192.168.78.132', '192.168.78.1', '172.18.0.1')
 
 # How many analytics events to show on a page.
 EVENTS_PER_PAGE = 10

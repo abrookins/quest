@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Analytics Events{% endblock %}
+
+{% block content %}
+  <h1 class="title">Analytics Events</h1>
+
+  <table class="table">
+    <thead>
+    <tr>
+      <td>Event</td>
+      <td>User</td>
+      <td>Account</td>
+      <td>Data</td>
+    </tr>
+    </thead>
+
+    {% for event in events %}
+      <tr>
+        <td>{{ event.name }}</td>
+        <td>{{ event.user.username }}</td>
+        <td>{{ event.user.profile.account.name }}</td>
+        <td>{{ event.data }}</td>
+      </tr>
+    {% endfor %}
+  </table>
+
+  <div class="pagination">
+    <span class="page-link">
+        {% if events.has_previous %}
+          <a href="?page=1">First</a>
+          <a href="?page={{ events.previous_page_number }}">Previous</a>
+        {% endif %}
+
+      <span class="current">
+          {{ events.number }}
+      </span>
+
+      {% if events.has_next %}
+        <a href="?page={{ events.next_page_number }}">Next</a>
+        <a href="?page={{ events.paginator.num_pages }}">Last</a>
+      {% endif %}
+    </span>
+  </div>
+
+{% endblock content %}

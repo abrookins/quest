@@ -16,6 +16,7 @@ services:
     ports:
       - "8000:8000"
     command: "make runserver"
+    working_dir: /usr/src/app
     environment:
       QUEST_DATABASE_HOST: db
     depends_on:
@@ -34,3 +35,6 @@ services:
     build: .
     environment:
       QUEST_DATABASE_HOST: db
+    working_dir: /usr/src/app
+    volumes:
+      - ".:/usr/src/app"

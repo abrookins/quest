@@ -1,8 +1,10 @@
 from django.db import models
+
+from quest.models import QuestModel
 from django.db.models import Q
 
 
-class Task(models.Model):
+class Task(QuestModel):
     goal = models.ForeignKey(
         'Goal', on_delete=models.CASCADE, related_name='tasks')
     name = models.CharField(help_text="The name of the goal", max_length=255)
@@ -20,7 +22,7 @@ class Task(models.Model):
         return 'Task: {}'.format(self.name)
 
 
-class TaskStatus(models.Model):
+class TaskStatus(QuestModel):
     INCOMPLETE = 1
     DONE = 2
     CHOICES = (
@@ -54,7 +56,7 @@ class TaskStatus(models.Model):
         unique_together = ('user', 'task')
 
 
-class Goal(models.Model):
+class Goal(QuestModel):
     user = models.ForeignKey(
         'auth.User',
         on_delete=models.CASCADE,

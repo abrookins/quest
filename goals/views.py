@@ -18,7 +18,7 @@ class UserOwnedTaskMixin:
     def get_queryset(self, *args, **kwargs):
         return self.queryset.filter(
             goal__user=self.request.user) | self.queryset.filter(
-                goal__is_public=True)
+            goal__is_public=True)
 
 
 class TaskListCreateView(UserOwnedTaskMixin, generics.ListCreateAPIView):
@@ -26,8 +26,9 @@ class TaskListCreateView(UserOwnedTaskMixin, generics.ListCreateAPIView):
     serializer_class = NewTaskSerializer
 
     def perform_create(self, serializer):
-        task = serializer.save()
-        Event.objects.create(name="task_created", data=serializer.data)
+        serializer.save()
+        Event.objects.create_user_event(name="task_created", data=serializer.data,
+                                        request=self.request)
 
 
 class TaskView(UserOwnedTaskMixin, generics.RetrieveUpdateDestroyAPIView):
@@ -46,11 +47,11 @@ class TaskView(UserOwnedTaskMixin, generics.RetrieveUpdateDestroyAPIView):
 class GoalListCreateView(UserOwnedGoalMixin, generics.ListCreateAPIView):
     def perform_create(self, serializer):
         goal = serializer.save()
-        Event.objects.create(name="goal_created", data=serializer.data)
+        Event.objects.create(name="goal_created", user=goal.user,
+                             data=serializer.data)
 
     def get(self, request, *args, **kwargs):
-        Event.objects.create(name="goal_list_viewed",
-                             data={"user_id": request.user.id})
+        Event.objects.create(name="goal_list_viewed", user=request.user)
         return self.list(request, *args, **kwargs)
 
     def get_serializer_class(self):
@@ -74,11 +75,11 @@ class GoalListCreateView(UserOwnedGoalMixin, generics.ListCreateAPIView):
             if has_started == 'true':
                 queryset = queryset.filter(
                     tasks__statuses__status=TaskStatus.DONE) | queryset.filter(
-                        tasks__statuses__status=TaskStatus.INCOMPLETE)
+                    tasks__statuses__status=TaskStatus.INCOMPLETE)
             else:
                 queryset = queryset.exclude(
                     tasks__statuses__status=TaskStatus.DONE).exclude(
-                        tasks__statuses__status=TaskStatus.INCOMPLETE)
+                    tasks__statuses__status=TaskStatus.INCOMPLETE)
 
         return queryset
 
@@ -87,13 +88,13 @@ class GoalListCreateView(UserOwnedGoalMixin, generics.ListCreateAPIView):
 class GoalView(UserOwnedGoalMixin, generics.RetrieveUpdateDestroyAPIView):
     queryset = Goal.objects.all()
     serializer_class = GoalSerializer  # <1>
-# end::goal-view-a[]
+
+    # end::goal-view-a[]
 
     def get(self, request, *args, **kwargs):
         instance = self.get_object()
-        Event.objects.create(name="goal_viewed",
-                             data={"goal_id": instance.id,
-                                   "user_id": request.user.id})
+        Event.objects.create(name="goal_viewed", data={"goal_id": instance.id},
+                             user=request.user, null=True, blank=True)
         return super().get(request, *args, **kwargs)
 
     def get_serializer_class(self):

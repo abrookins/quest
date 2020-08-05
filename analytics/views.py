@@ -16,10 +16,18 @@ from analytics.models import Event
 log = logging.getLogger(__name__)
 
 
-# tag::unpaginated[]
 @login_required
 def all_events(request):
     """Render the list of analytics events."""
+    events = Event.objects.all()
+    context = {'events': events}
+    return render(request, "analytics/events.html", context)
+
+
+# tag::unpaginated[]
+@login_required
+def events_select_related(request):
+    """Render the list of analytics events using select_related()."""
     events = Event.objects.all().select_related(
         'user', 'user__profile',
         'user__profile__account')
@@ -33,13 +41,12 @@ def all_events(request):
 def events_offset_paginated(request):
     """Render the list of analytics events.
 
-    Paginate results using Paginator.
+    Paginate results using Paginator, with select_related().
     """
-    all_events = Event.objects.all().select_related(
+    events = Event.objects.all().select_related(
         'user', 'user__profile',
         'user__profile__account').order_by('id')  # <1>
-    paginated = Paginator(all_events,
-                          settings.EVENTS_PER_PAGE)
+    paginated = Paginator(events, settings.EVENTS_PER_PAGE)
     page = request.GET.get('page', 1)
     events = paginated.get_page(page)
     context = {'events': events}
@@ -123,6 +130,12 @@ def events_keyset_paginated_postgres(request):
         events = Event.objects.raw("""
             SELECT *
             FROM analytics_event
+            LEFT OUTER JOIN "auth_user"
+              ON ("analytics_event"."user_id" = "auth_user"."id")
+            LEFT OUTER JOIN "accounts_userprofile"
+              ON ("auth_user"."id" = "accounts_userprofile"."user_id")
+            LEFT OUTER JOIN "accounts_account"
+              ON ("accounts_userprofile"."account_id" = "accounts_account"."id")
             WHERE (created_at, id) > (%s::timestamptz, %s)  -- <3>
             ORDER BY created_at, id  -- <4>
             FETCH FIRST %s ROWS ONLY
@@ -130,7 +143,9 @@ def events_keyset_paginated_postgres(request):
               settings.EVENTS_PER_PAGE])
     else:
         events = Event.objects.all().order_by(
-            'created_at', 'pk')
+            'created_at', 'pk').select_related(
+            'user', 'user__profile',
+            'user__profile__account')
 
     page = events[:settings.EVENTS_PER_PAGE]  # <5>
     if page:
@@ -154,7 +169,7 @@ def events_keyset_paginated_postgres(request):
 def events_keyset_paginated_generic(request):
     """Render the list of analytics events.
 
-,.gt,.gta  Paginates results using the "keyset" method. Instead of
+    Paginates results using the "keyset" method. Instead of
     row comparisons, this implementation uses a generic
     boolean logic approach to building the keyset query.
 
@@ -165,7 +180,9 @@ def events_keyset_paginated_generic(request):
     """
     keyset = request.GET.get('keyset')
     events = Event.objects.all().order_by(
-        'created_at', 'pk')
+        'created_at', 'pk').select_related(
+        'user', 'user__profile',
+        'user__profile__account')
     next_keyset = None
 
     if keyset:
@@ -252,7 +269,7 @@ class JsonbFieldIncrementer(Func):  # <1>
             "(COALESCE({}->>'{}','0')::int + %s)" \
             "::text::jsonb".format(  # <4>
                 json_column, property_name
-            ), (increment_by, ))
+            ), (increment_by,))
 
         super().__init__(json_column, property_expression,
                          set_or_increment_expression, **extra)

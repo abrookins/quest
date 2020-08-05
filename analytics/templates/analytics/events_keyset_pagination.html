@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Analytics Events{% endblock %}
+
+{% block content %}
+  <h1 class="title">Analytics Events</h1>
+
+  <table class="table">
+    <thead>
+    <tr>
+      <td>Event</td>
+      <td>User</td>
+      <td>Account</td>
+      <td>Data</td>
+    </tr>
+    </thead>
+    {% for event in events %}
+      <tr>
+        <td>{{ event.name }}</td>
+        <td>{{ event.user.username }}</td>
+        <td>{{ event.user.profile.account.name }}</td>
+        <td>{{ event.data }}</td>
+      </tr>
+    {% endfor %}
+  </table>
+
+  <div class="pagination">
+    <span class="page-link">
+      {% if next_keyset %}
+        <a class="t-next-link" href="?keyset={{ next_keyset }}">next</a>
+      {% endif %}
+    </span>
+  </div>
+{% endblock content %}
