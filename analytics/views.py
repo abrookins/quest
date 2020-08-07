@@ -10,7 +10,7 @@ from django.db.models import F, Func, Value
 from django.db.models.expressions import RawSQL
 from django.http import HttpResponseBadRequest
 from django.shortcuts import render
-from rest_framework import generics
+from rest_framework import generics, permissions
 from rest_framework.pagination import CursorPagination
 
 from analytics.models import Event
@@ -295,3 +295,10 @@ class EventListView(generics.ListAPIView):
     queryset = Event.objects.all()
     serializer_class = EventSerializer
     pagination_class = Pagination
+
+
+class ProtectedEventListView(generics.ListAPIView):
+    queryset = Event.objects.all()
+    serializer_class = EventSerializer
+    pagination_class = Pagination
+    permission_classes = [permissions.IsAuthenticated]

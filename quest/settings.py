@@ -14,6 +14,7 @@ import os
 
 # Read from the environment so we can support Docker or local dev.
 DATABASE_HOST = os.environ.get("QUEST_DATABASE_HOST", "localhost")
+REDIS_URL = os.environ.get("QUEST_REDIS_URL", "redis://localhost:6379/0")
 DATABASE_PASSWORD = os.environ.get("QUEST_DATABASE_PASSWORD", "test")
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -52,6 +53,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    'django.middleware.cache.UpdateCacheMiddleware',  # Must be first
     'debug_toolbar.middleware.DebugToolbarMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -60,6 +62,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django.middleware.cache.FetchFromCacheMiddleware',  # Must be last
 ]
 
 ROOT_URLCONF = 'quest.urls'
@@ -94,6 +97,22 @@ DATABASES = {
         'HOST': DATABASE_HOST
     }
 }
+
+CACHES = {
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": REDIS_URL,
+        "OPTIONS": {
+            "IGNORE_EXCEPTIONS": True,
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+        }
+    }
+}
+
+DJANGO_REDIS_LOG_IGNORED_EXCEPTIONS = True
+SESSION_ENGINE = "django.contrib.sessions.backends.cache"
+SESSION_CACHE_ALIAS = "default"
+
 
 # Password validation
 # https://docs.djangoproject.com/en/2.1/ref/settings/#auth-password-validators
@@ -138,8 +157,10 @@ STATIC_URL = '/static/'
 LOGIN_REDIRECT_URL = '/'
 
 REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES':
-    ('rest_framework.authentication.SessionAuthentication', )
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.SessionAuthentication',
+        'accounts.authentication.RedisTokenAuthentication',
+    ]
 }
 
 CSRF_COOKIE_NAME = "csrftoken"

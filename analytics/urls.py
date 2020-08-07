@@ -11,5 +11,7 @@ urlpatterns = [
     path('analytics_keyset_generic', views.events_keyset_paginated_generic,
          name="events_keyset_generic"),
     path('analytics/api', views.EventListView.as_view(),
-         name="events_api")
+         name="events_api"),
+    path('analytics/protected_api', views.ProtectedEventListView.as_view(),
+         name="events_api_protected")
 ]

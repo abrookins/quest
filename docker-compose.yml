@@ -13,6 +13,13 @@ services:
     volumes:
         - ./postgres-data:/var/lib/postgresql/data
 
+  redis:
+    image: redis:latest
+    ports:
+      - "6379:6379"
+    expose:
+      - "6379"
+
   web:
     build: .
     ports:
@@ -21,6 +28,7 @@ services:
     working_dir: /usr/src/app
     environment:
       QUEST_DATABASE_HOST: db
+      0UEST_REDIS_URL: "redis://redis:6379/0"
     depends_on:
       - "db"
     volumes:

@@ -1,10 +1,14 @@
 from django.contrib.admin import AdminSite
+from django.core.cache import cache
 from django.db.models import Count, OuterRef, Subquery, IntegerField, Avg
 from django.db.models.functions import Coalesce
 from django.shortcuts import render
 from django.urls import path
 
 from goals.models import Goal, TaskStatus, GoalSummary
+from quest import redis_key_schema
+
+ONE_HOUR = 60 * 60
 
 
 # tag::admin-site[]
@@ -22,10 +26,12 @@ class QuestAdminSite(AdminSite):
                      self.goals_dashboard_view_materialized)),
             path('goal_dashboard_with_avg_completions/',
                  self.admin_view(
-                     self.goals_avg_completions_view))
+                     self.goals_avg_completions_view)),
+            path('goal_dashboard_redis/',
+                 self.admin_view(
+                     self.goals_dashboard_view_redis))
         ]
         return urls
-
 # end::admin-site[]
 
 # tag::counting-with-python[]
@@ -75,6 +81,19 @@ class QuestAdminSite(AdminSite):
                       {"goals": goals})
 # end::counting-with-sql[]
 
+# tag::caching-view-in-redis[]
+    def goals_dashboard_view_redis(self, request):
+        key = redis_key_schema.admin_goals_dashboard()
+        cached_result = cache.get(key)
+
+        if not cached_result:
+            dashboard = self.goals_dashboard_view_sql(request)
+            cache.set(key, dashboard, timeout=ONE_HOUR)
+            return dashboard
+
+        return cached_result
+# end::caching-view-in-redis[]
+
 # tag::aggregations[]
     def goals_avg_completions_view(self, request):
         completed_tasks = Subquery(
@@ -109,7 +128,7 @@ class QuestAdminSite(AdminSite):
 
     def goals_dashboard_view_materialized(self, request):
         return render(request, "admin/goal_dashboard_materialized.html",
-                      {"summaries": GoalSummary.objects.all()})
+                      {"summaries": GoalSummary.objects.all().select_related()})
 
 
 admin_site = QuestAdminSite()

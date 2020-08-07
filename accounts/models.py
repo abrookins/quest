@@ -22,3 +22,4 @@ class UserProfile(QuestModel):
         help_text="The account to which this user belongs",
         on_delete=models.DO_NOTHING)
 # end::UserProfile[]
+

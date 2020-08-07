@@ -3,12 +3,14 @@ from django.contrib.auth.models import User
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.test import TestCase
 
+from accounts.models import Account
 from goals.models import Goal, TaskStatus
 
 
 class TestGoal(TestCase):
 
     def setUp(self):
+        self.account = Account.objects.create(name="My Account")
         self.user = User.objects.create_user('user', 'user@example.com', 'pass')
         self.test_file = SimpleUploadedFile('test.png', b'')
 

@@ -131,7 +131,7 @@ class Goal(QuestModel):
 
 
 class GoalSummary(models.Model):
-    goal = models.ForeignKey(
+    goal = models.OneToOneField(
         'Goal', on_delete=models.CASCADE, related_name='summaries',
         primary_key=True)
     completed_tasks = models.PositiveSmallIntegerField(
