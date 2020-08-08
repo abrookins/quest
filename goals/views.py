@@ -85,12 +85,9 @@ class GoalListCreateView(UserOwnedGoalMixin, generics.ListCreateAPIView):
         return queryset
 
 
-# tag::goal-view-a[]
 class GoalView(UserOwnedGoalMixin, generics.RetrieveUpdateDestroyAPIView):
     queryset = Goal.objects.all()
-    serializer_class = GoalSerializer  # <1>
-
-    # end::goal-view-a[]
+    serializer_class = GoalSerializer
 
     def get(self, request, *args, **kwargs):
         instance = self.get_object()

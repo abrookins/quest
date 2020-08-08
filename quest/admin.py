@@ -11,7 +11,6 @@ from quest import redis_key_schema
 ONE_HOUR = 60 * 60
 
 
-# tag::admin-site[]
 class QuestAdminSite(AdminSite):
     def get_urls(self):
         urls = super().get_urls() + [
@@ -32,9 +31,7 @@ class QuestAdminSite(AdminSite):
                      self.goals_dashboard_view_redis))
         ]
         return urls
-# end::admin-site[]
 
-# tag::counting-with-python[]
     def goals_dashboard_view_py(self, request):
         """Render the top ten goals by completed tasks.
 
@@ -58,9 +55,7 @@ class QuestAdminSite(AdminSite):
 
         return render(request, "admin/goal_dashboard.html",
                       {"goals": goals})
-# end::counting-with-python[]
 
-# tag::counting-with-sql[]
     def goals_dashboard_view_sql(self, request):
         completed_tasks = Subquery(  # <1>
             TaskStatus.objects.filter(
@@ -79,9 +74,7 @@ class QuestAdminSite(AdminSite):
 
         return render(request, "admin/goal_dashboard.html",
                       {"goals": goals})
-# end::counting-with-sql[]
 
-# tag::caching-view-in-redis[]
     def goals_dashboard_view_redis(self, request):
         key = redis_key_schema.admin_goals_dashboard()
         cached_result = cache.get(key)
@@ -92,9 +85,7 @@ class QuestAdminSite(AdminSite):
             return dashboard
 
         return cached_result
-# end::caching-view-in-redis[]
 
-# tag::aggregations[]
     def goals_avg_completions_view(self, request):
         completed_tasks = Subquery(
             TaskStatus.objects.filter(
@@ -124,7 +115,6 @@ class QuestAdminSite(AdminSite):
             "goals": top_ten_goals,
             "other_stats": other_stats
         })
-# end::aggregations[]
 
     def goals_dashboard_view_materialized(self, request):
         return render(request, "admin/goal_dashboard_materialized.html",

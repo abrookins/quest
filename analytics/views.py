@@ -27,7 +27,6 @@ def all_events(request):
     return render(request, "analytics/events.html", context)
 
 
-# tag::unpaginated[]
 @login_required
 def events_select_related(request):
     """Render the list of analytics events using select_related()."""
@@ -36,10 +35,8 @@ def events_select_related(request):
         'user__profile__account')
     context = {'events': events}
     return render(request, "analytics/events.html", context)
-# end::unpaginated[]
 
 
-# tag::paginated[]
 @login_required
 def events_offset_paginated(request):
     """Render the list of analytics events.
@@ -48,17 +45,15 @@ def events_offset_paginated(request):
     """
     events = Event.objects.all().select_related(
         'user', 'user__profile',
-        'user__profile__account').order_by('id')  # <1>
+        'user__profile__account').order_by('id')
     paginated = Paginator(events, settings.EVENTS_PER_PAGE)
     page = request.GET.get('page', 1)
     events = paginated.get_page(page)
     context = {'events': events}
     return render(request, "analytics/events_paginated.html",
                   context)
-# end::paginated[]
 
 
-# tag::keyset_pagination_pg[]
 KEYSET_SEPARATOR = '-'
 
 
@@ -68,14 +63,11 @@ class KeysetError(Exception):
 
 def encode_keyset(last_in_page):
     """Return a URL-safe base64-encoded keyset."""
-    return base64.urlsafe_b64encode(  # <1>
-        "{}{}{}".format(
-            last_in_page.pk,
-            KEYSET_SEPARATOR,
-            last_in_page.created_at.timestamp()
-        ).encode(
-            "utf-8"
-        )
+    pk = last_in_page.pk
+    time = last_in_page.created_at.timestamp()
+
+    return base64.urlsafe_b64encode(
+        f"{pk}{KEYSET_SEPARATOR}{time}".encode("utf-8")
     ).decode("utf-8")
 
 
@@ -84,7 +76,7 @@ def decode_keyset(keyset):
     try:
         keyset_decoded = base64.urlsafe_b64decode(
             keyset).decode("utf-8")
-    except (AttributeError, binascii.Error):  # <2>
+    except (AttributeError, binascii.Error):
         log.debug("Could not base64-decode keyset: %s",
                   keyset)
         raise KeysetError
@@ -150,7 +142,7 @@ def events_keyset_paginated_postgres(request):
             'user', 'user__profile',
             'user__profile__account')
 
-    page = events[:settings.EVENTS_PER_PAGE]  # <5>
+    page = events[:settings.EVENTS_PER_PAGE]
     if page:
         last_item = page[len(page) - 1]
         next_keyset = encode_keyset(last_item)
@@ -164,10 +156,8 @@ def events_keyset_paginated_postgres(request):
         request,
         "analytics/events_keyset_pagination.html",
         context)
-# end::keyset_pagination_pg[]
 
 
-# tag::keyset_pagination_generic[]
 @login_required
 def events_keyset_paginated_generic(request):
     """Render the list of analytics events.
@@ -195,7 +185,7 @@ def events_keyset_paginated_generic(request):
             return HttpResponseBadRequest(
                 "Invalid keyset specified")
 
-        events.filter(  # <1>
+        events.filter(
             created_at__gte=created_at
         ).exclude(
             created_at=created_at,
@@ -216,10 +206,8 @@ def events_keyset_paginated_generic(request):
         request,
         "analytics/events_keyset_pagination.html",
         context)
-# end::keyset_pagination_generic[]
 
 
-# tag::increment_all_event_versions[]
 @login_required
 def increment_all_event_versions():
     """Increment all event versions in the database.
@@ -230,10 +218,8 @@ def increment_all_event_versions():
     for event in Event.objects.all():
         event.version = event.version + 1
         event.save()
-# end::increment_all_event_versions[]
 
 
-# tag::increment_all_event_versions_f_expression[]
 @login_required
 def increment_all_event_versions_with_f_expression():
     """Increment all event versions in the database.
@@ -242,10 +228,8 @@ def increment_all_event_versions_with_f_expression():
     potentially millions of rows.
     """
     Event.objects.all().update(version=F('version') + 1)
-# end::increment_all_event_versions_f_expression[]
 
 
-# tag::update_all_events[]
 @login_required
 def increment_all_event_counts():
     """Update all event counts in the database."""
@@ -255,24 +239,19 @@ def increment_all_event_counts():
         else:
             event.data['count'] = 1
         event.save()
-# end::update_all_events[]
 
 
-# tag::update_all_events_func[]
-class JsonbFieldIncrementer(Func):  # <1>
+class JsonbFieldIncrementer(Func):
     """Set or increment a property of a JSONB column."""
     function = "jsonb_set"
     arity = 3
 
     def __init__(self, json_column, property_name,
                  increment_by, **extra):
-        property_expression = Value("{{{}}}".format
-                                    (property_name))  # <2>
-        set_or_increment_expression = RawSQL(  # <3>
-            "(COALESCE({}->>'{}','0')::int + %s)" \
-            "::text::jsonb".format(  # <4>
-                json_column, property_name
-            ), (increment_by,))
+        property_expression = Value(f"{{{property_name}}}")
+        set_or_increment_expression = RawSQL(
+            f"(COALESCE({json_column}->>'{property_name}','0')::int + %s)"
+            "::text::jsonb", (increment_by,))
 
         super().__init__(json_column, property_expression,
                          set_or_increment_expression, **extra)
@@ -283,7 +262,6 @@ def increment_all_event_counts_with_func():
     """Increment all event counts."""
     incr_by_one = JsonbFieldIncrementer('data', 'count', 1)
     Event.objects.all().update(data=incr_by_one).limit(10)
-# end::update_all_events_func[]
 
 
 class Pagination(CursorPagination):

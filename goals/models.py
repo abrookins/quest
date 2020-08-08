@@ -5,17 +5,11 @@ from django.db.models import Q
 from quest.models import QuestModel
 
 
-# tag::Task[]
-
 class Task(QuestModel):
     goal = models.ForeignKey(
         'Goal', on_delete=models.CASCADE, related_name='tasks')
     name = models.CharField(help_text="The name of the goal", max_length=255)
     url = models.URLField(help_text="The URL of this task")
-
-    # ...
-
-# end::Task[]
 
     def is_completed(self, user):
         return self.statuses.filter(user=user, status=TaskStatus.DONE).exists()
@@ -26,10 +20,9 @@ class Task(QuestModel):
         status.save()
 
     def __str__(self):
-        return 'Task: {}'.format(self.name)
+        return f'Task: {self.name}'
 
 
-# tag::TaskStatus[]
 class TaskStatusManager(models.Manager):
     def completed(self):
         return self.filter(status=TaskStatus.DONE)
@@ -56,10 +49,6 @@ class TaskStatus(QuestModel):
 
     objects = TaskStatusManager()
 
-    # ...
-
-    # end::TaskStatus[]
-
     def complete(self):
         self.status = self.DONE
         self.save()
@@ -72,14 +61,11 @@ class TaskStatus(QuestModel):
         return 'done'
 
     def __str__(self):
-        return "{} {} by {}".format(self.task.name, self.status_text,
-                                    self.user)
+        return f"{self.task.name} {self.status_text} by {self.user}"
 
     class Meta:
         unique_together = ('user', 'task')
 
-
-# tag::Goal[]
 
 class Goal(QuestModel):
     user = models.ForeignKey(
@@ -98,10 +84,6 @@ class Goal(QuestModel):
     is_public = models.BooleanField(
         default=False,
         help_text="Whether or not this goal is publicly accessible")
-
-    # ...
-
-    # end::Goal[]
 
     def __str__(self):
         return self.name
