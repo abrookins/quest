@@ -1,6 +1,7 @@
 from django.conf import settings
 from django.contrib.postgres.fields import JSONField
 from django.db import models
+from django.db.models import Q
 
 from quest.models import QuestModel
 
@@ -15,5 +16,6 @@ class Event(QuestModel):
 
     class Meta:
         indexes = [
-            models.Index(fields=['name'], name="analytics_event_name_idx"),  # <1>
+            models.Index(fields=['name'], name="analytics_event_name_idx",
+                         condition=Q(name="goal_viewed")),
         ]
