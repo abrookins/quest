@@ -17,7 +17,10 @@ class Event(QuestModel):
 
     class Meta:
         indexes = [
-            models.Index(fields=['name'], name="analytics_event_name_idx",
-                         condition=~Q(name="goal_viewed")),
+            models.Index(fields=['name'], name="analytics_event_name_idx")
         ]
 # end::Event[]
+
+        # Alternate - partial index:
+        # models.Index(fields=['name'], name="analytics_event_name_idx",
+        #              condition=Q(name="goal_viewed")),
