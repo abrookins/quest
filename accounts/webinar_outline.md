@@ -2,8 +2,8 @@
 
 ## Intro [4 mins]
 * Me
-    * Redis for Python Developers course August 18, sign up now, free
-    * The Temple of Django Database Performance
+    * Redis for Python Developers course August 18, sign up now, free https://university.redislabs.com/courses/ru102py/
+    * The Temple of Django Database Performance https://spellbookpress.com
 * Quest app
     * Quest Learning Management System
     * Postgres
@@ -17,18 +17,19 @@
     * Open DB console and get # of items in table
     * Use pagination (offset) http://localhost:8000/analytics_offset
     * Debug Toolbar - # of queries, speed
-    * Add select_related()
     * Preview: Keyset Pagination
-        * Explain why you would need this (Offset pagination breaks)
-        * CursorPagination with DRF - 3 mins
+        * Explain why you would need this (DB still has to get rows, deep results can break/be slow)
+        * CursorPagination with DRF - only show it
         * Refer to book for more
-* Annotations
+* Annotations ("Aggregations")
     * What is an annotation?
     * Counting with Python - http://localhost:8000/admin/goal_dashboard_sql/
     * Counting with SQL/Annotations - http://localhost:8000/admin/goal_dashboard_sql/
 * Materialized Views
     * Explanation - like caching in the database
     * Code [model for materialized view, code for migration]
+        * GoalSummary
+        * migration: goals 0014
     * Run the migration
     * View http://localhost:8000/admin/goal_dashboard_materialized/
     * Show refresh_summaries management command
@@ -45,24 +46,24 @@
     * Run migration
     * Explain analyze query with index - Database Panel
     * Should be index query
-    * May NOT be covering/index-only yet
-    * VACUUM if needed
+    * May NOT be index-only yet
+        * VACUUM if needed
     * Run query again - should be index only
  * Partial indexes
      * Difference compared to regular index
         * Use to EXCLUDE common data from the index (better write perf, smaller index)
-     * Show analytics index
+     * Show analytics index analytics/models.py
      * Show analytics migrations 0012
      * Run migration
      * VACUUM 
      * Run query again - should be index only
    
 
-## Caching and Redis [15]
+## Caching and Beyond Caching with Redis [15]
 * Using the caching framework
     * Why redis? The swiss-army knife of databases
     * Code [Settings.py - turn on caching with redis]
-    * Show middleware - will cache entire site in redis
+    * Show middleware -- will cache entire site -- disabled
     * Admin dashboard Redis version -- caching the calculated values in Redis
 * Session storage with Redis
     * Explanation
