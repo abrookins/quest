@@ -10,7 +10,7 @@ pluggy==0.13.1
 psycopg2-binary==2.8.5
 darksky_weather==1.5.0
 redis==3.5.3
-django-redis==4.5.0
+django-redis-cache
 
 
 # TODO: Move into separate file.

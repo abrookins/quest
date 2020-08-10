@@ -5,8 +5,9 @@
     * Redis for Python Developers course August 18, sign up now, free
     * The Temple of Django Database Performance
 * Quest app
-* Postgres
-* Redis
+    * Quest Learning Management System
+    * Postgres
+    * Redis
 * PyCharm
 
 ## Querying [15 mins]
@@ -49,22 +50,19 @@
     * Run query again - should be index only
  * Partial indexes
      * Difference compared to regular index
-     * AddIndexConcurrently in Django 3 and condition= parameter from Django 2.2
-     * Show analytics migrations 0011
-     * Explain analyze query without index - Database Panel
+        * Use to EXCLUDE common data from the index (better write perf, smaller index)
+     * Show analytics index
+     * Show analytics migrations 0012
      * Run migration
-     * Explain analyze query with index - Database Panel
-     * Should be index query
-     * May NOT be covering/index-only yet
-     * VACUUM if needed
+     * VACUUM 
      * Run query again - should be index only
    
 
-
 ## Caching and Redis [15]
-* Caching with the caching framework
+* Using the caching framework
+    * Why redis? The swiss-army knife of databases
     * Code [Settings.py - turn on caching with redis]
-    * Code [Caching a value in redis]
+    * Show middleware - will cache entire site in redis
     * Admin dashboard Redis version -- caching the calculated values in Redis
 * Session storage with Redis
     * Explanation
