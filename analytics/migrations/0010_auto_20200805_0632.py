@@ -12,6 +12,6 @@ class Migration(migrations.Migration):
 
     operations = [
         RemoveIndexConcurrently(
-            model_name='event', name='analytics_event_name_idx')
+            model_name='event', name='analytics_event_name_idx'),
     ]
 
