@@ -18,5 +18,4 @@ class Event(QuestModel):
         indexes = [
             models.Index(fields=['name'], name="analytics_event_name_idx",
                          condition=~Q(name="goal_viewed")),
-
         ]
