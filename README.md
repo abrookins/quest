@@ -2,8 +2,6 @@
 
 This is the example code for the book [The Temple of Django Database Performance](https://spellbookpress.com/books/temple-of-django-database-performance/) by Andrew Brookins.
 
-Don't own it yet?
-
 ## A Note on Versions
 
 This code is for version 2 of the book, published August 2020. All buyers of the version 1 ebook (2019) have access to version 2 as a free download.
