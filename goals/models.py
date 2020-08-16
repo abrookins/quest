@@ -6,7 +6,6 @@ from quest.models import QuestModel
 
 
 # tag::Task[]
-
 class Task(QuestModel):
     goal = models.ForeignKey(
         'Goal', on_delete=models.CASCADE, related_name='tasks')
@@ -14,7 +13,6 @@ class Task(QuestModel):
     url = models.URLField(help_text="The URL of this task")
 
     # ...
-
 # end::Task[]
 
     def is_completed(self, user):
@@ -80,7 +78,6 @@ class TaskStatus(QuestModel):
 
 
 # tag::Goal[]
-
 class Goal(QuestModel):
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
@@ -100,8 +97,7 @@ class Goal(QuestModel):
         help_text="Whether or not this goal is publicly accessible")
 
     # ...
-
-    # end::Goal[]
+# end::Goal[]
 
     def __str__(self):
         return self.name
@@ -130,6 +126,7 @@ class Goal(QuestModel):
             task__in=self.tasks.all(), user=user).delete()
 
 
+# tag::GoalSummary[]
 class GoalSummary(models.Model):
     goal = models.OneToOneField(
         'Goal', on_delete=models.CASCADE, related_name='summaries',
@@ -139,4 +136,5 @@ class GoalSummary(models.Model):
     date = models.DateTimeField()
 
     class Meta:
-        managed = False
+        managed = False  # <1>
+# end::GoalSummary[]

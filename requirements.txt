@@ -1,14 +1,14 @@
-Django==3.0
+Django==3.1
 django-bulma==0.8.0
 django-debug-toolbar==2.2
-django-model-utils==2.0.3
-django-silk==4.0.1
-djangorestframework==3.11.0
-newrelic==5.14.1.144
-Pillow==7.2
+django-model-utils==4.0.0
+django-silk==4.1.0
+djangorestframework==3.11.1
+newrelic==5.16.0.145
+Pillow==7.2.0
 pluggy==0.13.1
 psycopg2-binary==2.8.5
-darksky_weather==1.5.0
+darksky_weather==1.9.0
 redis==3.5.3
 django-redis-cache
 
@@ -16,8 +16,8 @@ django-redis-cache
 # TODO: Move into separate file.
 # Dev dependencies.
 pylint==2.5.3
-pylint-django==2.1.0
-pytest==5.4.3
+pylint-django==2.3.0
+pytest==6.0.1
 pytest-django==3.9.0
 yapf==0.30.0
 ipython
