@@ -1,7 +1,7 @@
 from django.conf import settings
+from django.contrib.postgres.fields import JSONField
 from django.db import models
 from django.db.models import Q
-
 from quest.models import QuestModel
 
 
@@ -12,7 +12,7 @@ class Event(QuestModel):
                              help_text="The user associated with this event",
                              on_delete=models.CASCADE, related_name="events",
                              null=True, blank=True)
-    data = models.JSONField()
+    data = JSONField()
 
     class Meta:
         indexes = [
