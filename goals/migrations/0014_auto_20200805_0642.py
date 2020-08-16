@@ -26,7 +26,7 @@ class Migration(migrations.Migration):
             name='status',
             field=models.PositiveSmallIntegerField(choices=[(1, 'Started'), (2, 'Done')], default=False, help_text='The status of this task'),
         ),
-        migrations.RunSQL(
+        migrations.RunSQL(  # <1>
             """
             CREATE MATERIALIZED VIEW goals_goalsummary AS
             SELECT "goals_goal"."id" as goal_id, CURRENT_DATE as "date",
