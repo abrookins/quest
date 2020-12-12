@@ -13,7 +13,8 @@ https://docs.djangoproject.com/en/2.1/ref/settings/
 import os
 
 # Read from the environment so we can support Docker or local dev.
-DATABASE_HOST = os.environ.get("QUEST_DATABASE_HOST", "localhost")
+PRIMARY_HOST = os.environ.get("QUEST_DATABASE_HOST", "localhost")
+REPLICA_HOST = os.environ.get("QUEST_REPLICA_HOST", "localhost")
 REDIS_URL = os.environ.get("QUEST_REDIS_URL", "redis://localhost:6379/0")
 DATABASE_PASSWORD = os.environ.get("QUEST_DATABASE_PASSWORD", "test")
 
@@ -94,9 +95,21 @@ DATABASES = {
         'NAME': 'quest',
         'USER': 'quest',
         'PASSWORD': DATABASE_PASSWORD,
-        'HOST': DATABASE_HOST
+        'HOST': PRIMARY_HOST
+    },
+    'replica': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'quest',
+        'USER': 'quest',
+        'PASSWORD': DATABASE_PASSWORD,
+        'HOST': REPLICA_HOST,
+        'TEST': {
+            'MIRROR': 'default',
+        },
     }
 }
+
+DATABASE_ROUTERS = ['quest.routers.PrimaryReplicaRouter']
 
 CACHES = {
     "default": {

@@ -16,7 +16,7 @@ This project uses Docker to set up its environment, and it includes a Makefile t
 
 Run `make build` to build the images for the environment.
 
-You'll also want to run `docker-compose run web ./manage.py makesuperuser` to create a superuser for yourself.
+You'll also want to run `docker-compose run web ./manage.py createsuperuser` to create a superuser for yourself.
 
 ### Dev Server
 

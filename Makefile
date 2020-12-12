@@ -2,6 +2,7 @@
 
 build:
 		docker-compose build
+		docker-compose exec web ./manage.py migrate
 
 dev:
 		docker-compose up -d
