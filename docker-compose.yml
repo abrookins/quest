@@ -60,7 +60,6 @@ services:
       QUEST_DATABASE_HOST: db
       QUEST_REPLICA_HOST: replica
       QUEST_REDIS_URL: "redis://redis:6379/0"
-      DJANGO_SETTINGS_MODULE: quest.test_settings
     working_dir: /usr/src/app
     volumes:
       - ".:/usr/src/app"

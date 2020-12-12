@@ -72,7 +72,8 @@ def encode_keyset(last_in_page):
         "{}{}{}".format(
             last_in_page.pk,
             KEYSET_SEPARATOR,
-            last_in_page.created_at.timestamp()
+            last_in_page.created_at.astimezone(
+                datetime.timezone.utc).timestamp()
         ).encode(
             "utf-8"
         )
@@ -96,7 +97,7 @@ def decode_keyset(keyset):
         raise KeysetError
     try:
         created_at = datetime.datetime.fromtimestamp(
-            float(created_at_timestamp))
+            float(created_at_timestamp), datetime.timezone.utc)
     except (ValueError, OverflowError):
         log.debug("Could not parse created_at timestamp "
                   "from keyset: %s", created_at_timestamp)
