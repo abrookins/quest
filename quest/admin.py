@@ -126,9 +126,11 @@ class QuestAdminSite(AdminSite):
         })
 # end::aggregations[]
 
+# tag::querying-materialized-views[]
     def goals_dashboard_view_materialized(self, request):
         return render(request, "admin/goal_dashboard_materialized.html",
                       {"summaries": GoalSummary.objects.all().select_related()})
+# end::querying-materialized-views[]
 
 
 admin_site = QuestAdminSite()

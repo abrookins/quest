@@ -139,8 +139,8 @@ def events_keyset_paginated_postgres(request):
               ON ("auth_user"."id" = "accounts_userprofile"."user_id")
             LEFT OUTER JOIN "accounts_account"
               ON ("accounts_userprofile"."account_id" = "accounts_account"."id")
-            WHERE (created_at, id) > (%s::timestamptz, %s)  -- <3>
-            ORDER BY created_at, id  -- <4>
+            WHERE ("analytics_event"."created_at", "analytics_event"."id") > (%s::timestamptz, %s)  -- <3>
+            ORDER BY "analytics_event"."created_at", "analytics_event"."id"  -- <4>
             FETCH FIRST %s ROWS ONLY
         """, [created_at.isoformat(), pk,
               settings.EVENTS_PER_PAGE])

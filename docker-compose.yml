@@ -45,6 +45,7 @@ services:
     build: .
     environment:
       QUEST_DATABASE_HOST: db
+      QUEST_REDIS_URL: "redis://redis:6379/0"
     working_dir: /usr/src/app
     volumes:
       - ".:/usr/src/app"

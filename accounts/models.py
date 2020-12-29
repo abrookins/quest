@@ -20,6 +20,8 @@ class UserProfile(QuestModel):
     account = models.OneToOneField(  # <1>
         Account,
         help_text="The account to which this user belongs",
+        null=True,
+        blank=True,
         on_delete=models.DO_NOTHING)
 # end::UserProfile[]
 
