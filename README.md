@@ -12,6 +12,8 @@ If you purchased the 2019 edition of the print book, this code is not substantia
 
 This project uses Docker to set up its environment, and it includes a Makefile to let you run `docker-compose` commands more easily.
 
+**Note on Python 3.8**: If you're trying to set up the app _without_ Docker, make sure to use Python 3.8. Some dependencies do not support Python 3.9 at the time of this writing.
+
 ### Initial Setup
 
 Run `make build` to build the images for the environment.

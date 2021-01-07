@@ -1,11 +1,26 @@
+import json
+
 from rest_framework import generics, status
 from rest_framework.response import Response
+from rq import Queue
 
 from analytics.models import Event
 from goals.models import Goal, Task, TaskStatus
 from goals.serializers import (GoalSerializer, NewGoalSerializer,
                                TaskSerializer, NewTaskSerializer,
                                UpdateTaskSerializer)
+from quest.connections import redis_connection
+from quest.redis_key_schema import task
+
+
+redis = redis_connection()
+q = Queue(connection=redis)
+
+
+def create_task(data, user_id):
+    """An async RQ function that saves a new Task object to the database."""
+    Task.objects.create(**data)
+    Event.objects.create(name="task_created", data=data, user_id=user_id)
 
 
 class UserOwnedGoalMixin:
@@ -26,14 +41,23 @@ class TaskListCreateView(UserOwnedTaskMixin, generics.ListCreateAPIView):
     serializer_class = NewTaskSerializer
 
     def perform_create(self, serializer):
-        serializer.save()
-        Event.objects.create(name="task_created", data=serializer.data,
-                             user=self.request.user)
+        # Example: Write-behind caching.
+        key = task(serializer.validated_data['uuid'])
+        redis.set(key, json.dumps(serializer.validated_data))
+        q.enqueue(create_task, serializer.validated_data, self.request.user.id)
 
 
 class TaskView(UserOwnedTaskMixin, generics.RetrieveUpdateDestroyAPIView):
     queryset = Task.objects.all()
     serializer_class = TaskSerializer
+
+    def get(self, request, *args, **kwargs):
+        # NOTE: You'd want error handling code here.
+        cached = redis.get(task(kwargs.get('uuid')))
+        if cached:
+            return json.dump(cached)
+        # TODO: What about hydrating the cache (lazy load)? You'd want to do that here.
+        return super().get(request, *args, **kwargs)
 
     def get_serializer_context(self):
         return {'request': self.request}

@@ -16,3 +16,11 @@ def admin_goals_dashboard():
     Format: admin:goals-dashboard
     """
     return "admin:goals-dashboard"
+
+
+def task():
+    """
+    Task data.
+
+    Format: task:[id]
+    """
