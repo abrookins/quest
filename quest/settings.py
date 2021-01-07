@@ -103,9 +103,6 @@ DATABASES = {
         'USER': 'quest',
         'PASSWORD': DATABASE_PASSWORD,
         'HOST': REPLICA_HOST,
-        'TEST': {
-            'MIRROR': 'default',
-        },
     }
 }
 

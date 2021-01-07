@@ -1,3 +1,5 @@
+from django.db import connection, transaction
+
 from rest_framework import generics, status
 from rest_framework.response import Response
 
@@ -27,8 +29,14 @@ class TaskListCreateView(UserOwnedTaskMixin, generics.ListCreateAPIView):
 
     def perform_create(self, serializer):
         serializer.save()
-        Event.objects.create(name="task_created", data=serializer.data,
-                             user=self.request.user)
+        # Read-only replicas example:
+        # Make sure the database connection confirms writes to replicas
+        # before returning success during this transaction.
+        with transaction.atomic():
+            with connection.cursor() as cursor:
+                cursor.execute("SET LOCAL synchronous_commit TO ON;")
+                Event.objects.create(name="task_created", data=serializer.data,
+                                    user=self.request.user)
 
 
 class TaskView(UserOwnedTaskMixin, generics.RetrieveUpdateDestroyAPIView):

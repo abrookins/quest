@@ -11,6 +11,7 @@ psycopg2-binary==2.8.5
 darksky_weather==1.9.0
 redis==3.5.3
 django-redis-cache
+mmh3
 
 # Pinned requirements for darksky-weather
 pytz==2019.1
