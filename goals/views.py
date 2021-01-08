@@ -1,18 +1,20 @@
 import json
-from django.db import connection, transaction
 
+import ipdb
+
+from analytics.models import Event
+from django.db import connection, transaction
+from django.http.response import HttpResponse
+from quest.connections import redis_connection
+from quest.redis_key_schema import task
 from rest_framework import generics, status
 from rest_framework.response import Response
 from rq import Queue
 
-from analytics.models import Event
 from goals.models import Goal, Task, TaskStatus
 from goals.serializers import (GoalSerializer, NewGoalSerializer,
-                               TaskSerializer, NewTaskSerializer,
+                               NewTaskSerializer, TaskSerializer,
                                UpdateTaskSerializer)
-from quest.connections import redis_connection
-from quest.redis_key_schema import task
-
 
 redis = redis_connection()
 q = Queue(connection=redis)
@@ -50,6 +52,7 @@ class TaskListCreateView(UserOwnedTaskMixin, generics.ListCreateAPIView):
 
 
 class TaskView(UserOwnedTaskMixin, generics.RetrieveUpdateDestroyAPIView):
+    lookup_field = 'uuid'
     queryset = Task.objects.all()
     serializer_class = TaskSerializer
 
@@ -59,7 +62,7 @@ class TaskView(UserOwnedTaskMixin, generics.RetrieveUpdateDestroyAPIView):
         # NOTE: You'd want error handling code here.
         cached_task = redis.get(cache_key)
         if cached_task:
-            return Response(cached_task)
+            return HttpResponse(cached_task, content_type="application/json")
 
         instance = self.get_object()
         serializer = self.get_serializer(instance)
