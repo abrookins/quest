@@ -72,7 +72,7 @@ def test_has_next_link(events, page_one_generic):
 
 
 @pytest.mark.django_db
-def test_next_link_requests_next_page(events,page_one_generic,
+def test_next_link_requests_next_page(events, page_one_generic,
                                       authenticated_client):
     next_keyset = page_one_generic.context['next_keyset']
     next_page_url = "{}?keyset={}".format(

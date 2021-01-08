@@ -32,6 +32,15 @@ Run `docker-compose logs web` to view logs for the web application. Likewise, 'p
 
 Run `make test` to run the tests. Tests run in a container. If you drop in "import ipdb; ipdb.set_trace()" anywhere in the project code, you'll drop into a debugging session if the tests hit that code.
 
+## Generating Data for Performance Problems
+
+Recreating many of the performance problems in this book requires a large amount of data in your database. This project includes a management command that will generate analytics events sufficient to cause performance problems.
+
+Here's an example of using the management command to generate 500,000 analytics events for the user with
+ID 1 (in my case, this is my admin user):
+
+    $ docker-compose run web ./manage.py generate_events --num 500000 --user-id 1
+
 ## Copyright
 
 This example code is copyright 2020 Andrew Brookins.

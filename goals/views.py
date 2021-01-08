@@ -1,4 +1,5 @@
 import json
+from django.db import connection, transaction
 
 from rest_framework import generics, status
 from rest_framework.response import Response
@@ -45,19 +46,27 @@ class TaskListCreateView(UserOwnedTaskMixin, generics.ListCreateAPIView):
         key = task(serializer.validated_data['uuid'])
         redis.set(key, json.dumps(serializer.validated_data))
         q.enqueue(create_task, serializer.validated_data, self.request.user.id)
+        serializer.save()
 
 
 class TaskView(UserOwnedTaskMixin, generics.RetrieveUpdateDestroyAPIView):
     queryset = Task.objects.all()
     serializer_class = TaskSerializer
 
-    def get(self, request, *args, **kwargs):
+    def retrieve(self, request, *args, **kwargs):
+        cache_key = task(kwargs.get('uuid'))
+
         # NOTE: You'd want error handling code here.
-        cached = redis.get(task(kwargs.get('uuid')))
-        if cached:
-            return json.dump(cached)
-        # TODO: What about hydrating the cache (lazy load)? You'd want to do that here.
-        return super().get(request, *args, **kwargs)
+        cached_task = redis.get(cache_key)
+        if cached_task:
+            return Response(cached_task)
+
+        instance = self.get_object()
+        serializer = self.get_serializer(instance)
+
+        # Lazy-loading: cache on a miss.
+        redis.set(cache_key, json.dumps(serializer.data))
+        return Response(serializer.data)
 
     def get_serializer_context(self):
         return {'request': self.request}
@@ -70,9 +79,15 @@ class TaskView(UserOwnedTaskMixin, generics.RetrieveUpdateDestroyAPIView):
 
 class GoalListCreateView(UserOwnedGoalMixin, generics.ListCreateAPIView):
     def perform_create(self, serializer):
-        goal = serializer.save()
-        Event.objects.create(name="goal_created", user=goal.user,
-                             data=serializer.data)
+        # Read-only replicas example:
+        # Make sure the database connection confirms writes to replicas
+        # before returning success during this transaction.
+        with transaction.atomic():
+            with connection.cursor() as cursor:
+                cursor.execute("SET LOCAL synchronous_commit TO ON;")
+                goal = serializer.save()
+                Event.objects.create(name="goal_created", user=goal.user,
+                                    data=serializer.data)
 
     def get(self, request, *args, **kwargs):
         Event.objects.create(name="goal_list_viewed", user=request.user,

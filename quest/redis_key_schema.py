@@ -18,9 +18,10 @@ def admin_goals_dashboard():
     return "admin:goals-dashboard"
 
 
-def task():
+def task(uuid):
     """
     Task data.
 
-    Format: task:[id]
+    Format: task:[uuid]
     """
+    return f"task:{uuid}"
