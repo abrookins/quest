@@ -44,11 +44,16 @@ class TaskListCreateView(UserOwnedTaskMixin, generics.ListCreateAPIView):
     serializer_class = NewTaskSerializer
 
     def perform_create(self, serializer):
-        # Example: Write-behind caching.
         key = task(serializer.validated_data['uuid'])
         redis.set(key, json.dumps(serializer.validated_data))
+
+        # Example: Write-behind caching.
+        # Write to cache, return response, write to DB asynchronously.
         q.enqueue(create_task, serializer.validated_data, self.request.user.id)
-        serializer.save()
+
+        # Example: Write-through caching.
+        # Write to cache, write to DB synchronously, return response.
+        # serializer.save()
 
 
 class TaskView(UserOwnedTaskMixin, generics.RetrieveUpdateDestroyAPIView):
@@ -57,6 +62,7 @@ class TaskView(UserOwnedTaskMixin, generics.RetrieveUpdateDestroyAPIView):
     serializer_class = TaskSerializer
 
     def retrieve(self, request, *args, **kwargs):
+        # Example: Look-aside caching.
         cache_key = task(kwargs.get('uuid'))
 
         # NOTE: You'd want error handling code here.
@@ -69,6 +75,7 @@ class TaskView(UserOwnedTaskMixin, generics.RetrieveUpdateDestroyAPIView):
 
         # Lazy-loading: cache on a miss.
         redis.set(cache_key, json.dumps(serializer.data))
+
         return Response(serializer.data)
 
     def get_serializer_context(self):
@@ -82,7 +89,7 @@ class TaskView(UserOwnedTaskMixin, generics.RetrieveUpdateDestroyAPIView):
 
 class GoalListCreateView(UserOwnedGoalMixin, generics.ListCreateAPIView):
     def perform_create(self, serializer):
-        # Read-only replicas example:
+        # Read-only replicas example (guarantee consistency):
         # Make sure the database connection confirms writes to replicas
         # before returning success during this transaction.
         with transaction.atomic():
