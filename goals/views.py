@@ -1,7 +1,5 @@
 import json
 
-import ipdb
-
 from analytics.models import Event
 from django.db import connection, transaction
 from django.http.response import HttpResponse
