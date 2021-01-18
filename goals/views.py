@@ -1,4 +1,5 @@
-import json
+import pickle
+from uuid import uuid4
 
 from analytics.models import Event
 from django.db import connection, transaction
@@ -7,7 +8,7 @@ from quest.connections import redis_connection
 from quest.redis_key_schema import task
 from rest_framework import generics, status
 from rest_framework.response import Response
-from rq import Queue
+from django_rq import enqueue
 
 from goals.models import Goal, Task, TaskStatus
 from goals.serializers import (GoalSerializer, NewGoalSerializer,
@@ -15,7 +16,6 @@ from goals.serializers import (GoalSerializer, NewGoalSerializer,
                                UpdateTaskSerializer)
 
 redis = redis_connection()
-q = Queue(connection=redis)
 
 
 def create_task(data, user_id):
@@ -42,16 +42,14 @@ class TaskListCreateView(UserOwnedTaskMixin, generics.ListCreateAPIView):
     serializer_class = NewTaskSerializer
 
     def perform_create(self, serializer):
-        key = task(serializer.validated_data['uuid'])
-        redis.set(key, json.dumps(serializer.validated_data))
+        uuid = serializer.validated_data.get('uuid', str(uuid4()))
+        key = task(uuid)
+
+        redis.set(key, pickle.dumps(serializer.validated_data))
 
         # Example: Write-behind caching.
         # Write to cache, return response, write to DB asynchronously.
-        q.enqueue(create_task, serializer.validated_data, self.request.user.id)
-
-        # Example: Write-through caching.
-        # Write to cache, write to DB synchronously, return response.
-        # serializer.save()
+        enqueue(create_task, serializer.validated_data, self.request.user.id)
 
 
 class TaskView(UserOwnedTaskMixin, generics.RetrieveUpdateDestroyAPIView):
@@ -72,7 +70,7 @@ class TaskView(UserOwnedTaskMixin, generics.RetrieveUpdateDestroyAPIView):
         serializer = self.get_serializer(instance)
 
         # Lazy-loading: cache on a miss.
-        redis.set(cache_key, json.dumps(serializer.data))
+        redis.set(cache_key, pickle.dumps(serializer.data))
 
         return Response(serializer.data)
 

@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/2.1/ref/settings/
 """
 
 import os
+import random
 
 # Read from the environment so we can support Docker or local dev.
 PRIMARY_HOST = os.environ.get("QUEST_DATABASE_HOST", "localhost")
@@ -50,6 +51,7 @@ INSTALLED_APPS = [
     'django.contrib.humanize',
     'rest_framework',
     'debug_toolbar',
+    'django_rq',
     #'silk',
 ]
 
@@ -111,7 +113,15 @@ DATABASE_ROUTERS = ['quest.routers.PrimaryReplicaRouter']
 CACHES = {
     "default": {
         "BACKEND": "redis_cache.RedisCache",
-        "LOCATION": REDIS_URL
+        "LOCATION": REDIS_URL,
+
+    }
+}
+
+RQ_QUEUES = {
+    'default': {
+        'URL': REDIS_URL,
+        'DEFAULT_TIMEOUT': random.randint(350, 375),  # Jitter
     }
 }
 
