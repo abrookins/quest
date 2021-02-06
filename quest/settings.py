@@ -11,9 +11,11 @@ https://docs.djangoproject.com/en/2.1/ref/settings/
 """
 
 import os
+import random
 
 # Read from the environment so we can support Docker or local dev.
-DATABASE_HOST = os.environ.get("QUEST_DATABASE_HOST", "localhost")
+PRIMARY_HOST = os.environ.get("QUEST_DATABASE_HOST", "localhost")
+REPLICA_HOST = os.environ.get("QUEST_REPLICA_HOST", "localhost")
 REDIS_URL = os.environ.get("QUEST_REDIS_URL", "redis://localhost:6379/0")
 DATABASE_PASSWORD = os.environ.get("QUEST_DATABASE_PASSWORD", "test")
 
@@ -49,6 +51,7 @@ INSTALLED_APPS = [
     'django.contrib.humanize',
     'rest_framework',
     'debug_toolbar',
+    'django_rq',
     #'silk',
 ]
 
@@ -94,14 +97,31 @@ DATABASES = {
         'NAME': 'quest',
         'USER': 'quest',
         'PASSWORD': DATABASE_PASSWORD,
-        'HOST': DATABASE_HOST
+        'HOST': PRIMARY_HOST
+    },
+    'replica': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'quest',
+        'USER': 'quest',
+        'PASSWORD': DATABASE_PASSWORD,
+        'HOST': REPLICA_HOST,
     }
 }
+
+DATABASE_ROUTERS = ['quest.routers.PrimaryReplicaRouter']
 
 CACHES = {
     "default": {
         "BACKEND": "redis_cache.RedisCache",
-        "LOCATION": REDIS_URL
+        "LOCATION": REDIS_URL,
+
+    }
+}
+
+RQ_QUEUES = {
+    'default': {
+        'URL': REDIS_URL,
+        'DEFAULT_TIMEOUT': random.randint(350, 375),  # Jitter
     }
 }
 

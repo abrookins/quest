@@ -9,7 +9,7 @@ from analytics.models import Event
 # tag::fixtures[]
 @pytest.fixture
 def user():
-    return User.objects.create_user(username="Mac", password="Daddy")
+    yield User.objects.create_user(username="Mac", password="Daddy")
 
 
 @pytest.fixture

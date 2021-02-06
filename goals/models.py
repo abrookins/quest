@@ -1,3 +1,5 @@
+from uuid import uuid4
+
 from django.conf import settings
 from django.db import models
 from django.db.models import Q
@@ -7,6 +9,7 @@ from quest.models import QuestModel
 
 # tag::Task[]
 class Task(QuestModel):
+    uuid = models.UUIDField(default=uuid4)
     goal = models.ForeignKey(
         'Goal', on_delete=models.CASCADE, related_name='tasks')
     name = models.CharField(help_text="The name of the goal", max_length=255)
@@ -25,6 +28,11 @@ class Task(QuestModel):
 
     def __str__(self):
         return 'Task: {}'.format(self.name)
+
+    class Meta:
+        indexes = [
+            models.Index(fields=['uuid']),
+        ]
 
 
 # tag::TaskStatus[]

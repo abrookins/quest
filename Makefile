@@ -2,6 +2,7 @@
 
 build:
 		docker-compose build
+		docker-compose exec web ./manage.py migrate
 
 dev:
 		docker-compose up -d
@@ -13,7 +14,7 @@ migrate:
 		docker-compose exec web ./manage.py migrate
 
 test:	dev
-		docker-compose run --rm test pytest
+		docker-compose run --rm test pytest -s
 
 clean:
 		docker-compose stop

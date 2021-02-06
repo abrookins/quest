@@ -1,11 +1,27 @@
-from rest_framework import generics, status
-from rest_framework.response import Response
+import pickle
+from uuid import uuid4
 
 from analytics.models import Event
+from django.db import connection, transaction
+from django.http.response import HttpResponse
+from quest.connections import redis_connection
+from quest.redis_key_schema import task
+from rest_framework import generics, status
+from rest_framework.response import Response
+from django_rq import enqueue
+
 from goals.models import Goal, Task, TaskStatus
 from goals.serializers import (GoalSerializer, NewGoalSerializer,
-                               TaskSerializer, NewTaskSerializer,
+                               NewTaskSerializer, TaskSerializer,
                                UpdateTaskSerializer)
+
+redis = redis_connection()
+
+
+def create_task(data, user_id):
+    """An async RQ function that saves a new Task object to the database."""
+    Task.objects.create(**data)
+    Event.objects.create(name="task_created", data=data, user_id=user_id)
 
 
 class UserOwnedGoalMixin:
@@ -26,14 +42,37 @@ class TaskListCreateView(UserOwnedTaskMixin, generics.ListCreateAPIView):
     serializer_class = NewTaskSerializer
 
     def perform_create(self, serializer):
-        serializer.save()
-        Event.objects.create(name="task_created", data=serializer.data,
-                             user=self.request.user)
+        uuid = serializer.validated_data.get('uuid', str(uuid4()))
+        key = task(uuid)
+
+        redis.set(key, pickle.dumps(serializer.validated_data))
+
+        # Example: Write-behind caching.
+        # Write to cache, return response, write to DB asynchronously.
+        enqueue(create_task, serializer.validated_data, self.request.user.id)
 
 
 class TaskView(UserOwnedTaskMixin, generics.RetrieveUpdateDestroyAPIView):
+    lookup_field = 'uuid'
     queryset = Task.objects.all()
     serializer_class = TaskSerializer
+
+    def retrieve(self, request, *args, **kwargs):
+        # Example: Look-aside caching.
+        cache_key = task(kwargs.get('uuid'))
+
+        # NOTE: You'd want error handling code here.
+        cached_task = redis.get(cache_key)
+        if cached_task:
+            return HttpResponse(cached_task, content_type="application/json")
+
+        instance = self.get_object()
+        serializer = self.get_serializer(instance)
+
+        # Lazy-loading: cache on a miss.
+        redis.set(cache_key, pickle.dumps(serializer.data))
+
+        return Response(serializer.data)
 
     def get_serializer_context(self):
         return {'request': self.request}
@@ -46,9 +85,15 @@ class TaskView(UserOwnedTaskMixin, generics.RetrieveUpdateDestroyAPIView):
 
 class GoalListCreateView(UserOwnedGoalMixin, generics.ListCreateAPIView):
     def perform_create(self, serializer):
-        goal = serializer.save()
-        Event.objects.create(name="goal_created", user=goal.user,
-                             data=serializer.data)
+        # Read-only replicas example (guarantee consistency):
+        # Make sure the database connection confirms writes to replicas
+        # before returning success during this transaction.
+        with transaction.atomic():
+            with connection.cursor() as cursor:
+                cursor.execute("SET LOCAL synchronous_commit TO ON;")
+                goal = serializer.save()
+                Event.objects.create(name="goal_created", user=goal.user,
+                                    data=serializer.data)
 
     def get(self, request, *args, **kwargs):
         Event.objects.create(name="goal_list_viewed", user=request.user,

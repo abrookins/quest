@@ -20,6 +20,8 @@ If you purchased the 2019 edition of the print book, this code is not substantia
 
 This project uses Docker to set up its environment, and it includes a Makefile to let you run `docker-compose` commands more easily.
 
+**Note on Python 3.8**: If you're trying to set up the app _without_ Docker, make sure to use Python 3.8. Some dependencies do not support Python 3.9 at the time of this writing.
+
 ### Initial Setup
 
 Run `make build` to build the images for the environment.
@@ -39,6 +41,15 @@ Run `docker-compose logs web` to view logs for the web application. Likewise, 'p
 Run `make test` to run the tests. Tests run in a container.
 
 **Note on debugging**: If you add the line `import ipdb; ipdb.set_trace()` anywhere in the project code, `make test` will start an interactive debugging session when the tests hit that code.
+
+## Generating Data for Performance Problems
+
+Recreating many of the performance problems in this book requires a large amount of data in your database. This project includes a management command that will generate analytics events sufficient to cause performance problems.
+
+Here's an example of using the management command to generate 500,000 analytics events for the user with
+ID 1 (in my case, this is my admin user):
+
+    $ docker-compose run web ./manage.py generate_events --num 500000 --user-id 1
 
 ## Copyright
 
