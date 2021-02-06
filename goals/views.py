@@ -1,7 +1,7 @@
-import pickle
 from uuid import uuid4
 
 from analytics.models import Event
+from django.core.cache import cache
 from django.db import connection, transaction
 from django.http.response import HttpResponse
 from quest.connections import redis_connection
@@ -45,10 +45,9 @@ class TaskListCreateView(UserOwnedTaskMixin, generics.ListCreateAPIView):
         uuid = serializer.validated_data.get('uuid', str(uuid4()))
         key = task(uuid)
 
-        redis.set(key, pickle.dumps(serializer.validated_data))
-
         # Example: Write-behind caching.
         # Write to cache, return response, write to DB asynchronously.
+        cache.set(key, serializer.validated_data)
         enqueue(create_task, serializer.validated_data, self.request.user.id)
 
 
@@ -60,9 +59,8 @@ class TaskView(UserOwnedTaskMixin, generics.RetrieveUpdateDestroyAPIView):
     def retrieve(self, request, *args, **kwargs):
         # Example: Look-aside caching.
         cache_key = task(kwargs.get('uuid'))
+        cached_task = cache.get(cache_key)
 
-        # NOTE: You'd want error handling code here.
-        cached_task = redis.get(cache_key)
         if cached_task:
             return HttpResponse(cached_task, content_type="application/json")
 
@@ -70,7 +68,7 @@ class TaskView(UserOwnedTaskMixin, generics.RetrieveUpdateDestroyAPIView):
         serializer = self.get_serializer(instance)
 
         # Lazy-loading: cache on a miss.
-        redis.set(cache_key, pickle.dumps(serializer.data))
+        cache.set(cache_key, serializer.data)
 
         return Response(serializer.data)
 

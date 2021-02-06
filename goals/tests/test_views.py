@@ -1,7 +1,6 @@
-import json
 import pytest
+from django.core.cache import cache
 from django.contrib.auth.models import User
-from django.db import connection
 from django.urls.base import reverse
 
 from goals.models import Goal, Task
@@ -52,14 +51,7 @@ def test_get_task(authenticated_client, task):
 @pytest.mark.django_db
 def test_get_task_uses_cache(authenticated_client, task, redis):
     url = reverse("task", kwargs={"uuid": task.uuid})
-    before = len(connection.queries)
-    after = before + 1
-
     authenticated_client.get(url)
-    # assert len(connection.queries) == after
+    cached_task = cache.get(redis_key_schema.task(task.uuid))
+    assert cached_task == {'completed': False, 'goal': 2, 'id': 2, 'name': 'Read caching docs'}
 
-    # This request should use the cache -- thus the count
-    # should not have increased.
-    authenticated_client.get(url)
-    # assert len(connection.queries) == after
-    assert redis.get(redis_key_schema.task(task.uuid)) == '{"id": 2, "name": "Read caching docs", "goal": 2, "completed": false}'
