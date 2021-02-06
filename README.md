@@ -1,14 +1,8 @@
 # Quest LMS
 
-This is the example application for the 2nd Edition of the book [The Temple of Django Database Performance](https://spellbookpress.com).
+This is the example application for the 2nd Edition of the book [The Temple of Django Database Performance](https://spellbookpress.com/books/temple-of-django-database-performance/) by Andrew Brookins.
 
-## Note: Unreleased Content!
-
-This project is for the _second_ edition of the book, which as of 8/2020 is not yet published.
-
-**Note**: Not sure which one you have? The first edition has a white cover, and the second edition a black cover.
-
-This is the example code for the book [The Temple of Django Database Performance](https://spellbookpress.com/books/temple-of-django-database-performance/) by Andrew Brookins.
+**Note**: Not sure which edition you have? The first edition has a white cover, and the second edition has a black cover.
 
 ## A Note on Versions
 
