@@ -3,7 +3,7 @@ django-bulma==0.8.0
 django-debug-toolbar==2.2
 django-model-utils==4.0.0
 django-silk==4.1.0
-djangorestframework==3.11.1
+djangorestframework==3.11.2
 newrelic==5.16.0.145
 Pillow==7.2.0
 pluggy==0.13.1
