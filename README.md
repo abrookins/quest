@@ -1,44 +1,77 @@
-# quest
+# Quest
 
-This is the example code for the book [The Temple of Django Database Performance](https://spellbookpress.com/books/temple-of-django-database-performance/) by Andrew Brookins.
+Example Django project for [The Temple of Django Database Performance](https://spellbookpress.com/books/temple-of-django-database-performance/) by Andrew Brookins.
 
-## A Note on Versions
+This tree is the `code/` submodule of the book repo, on branch `temple-book`. Listings in the book `include::` files from here.
 
-This code is for version 2 of the book, published August 2020. All buyers of the version 1 ebook (2019) have access to version 2 as a free download.
+## Versions
 
-If you purchased the 2019 edition of the print book, this code is not substantially different than the code referenced in that book. However, this code includes a new example on using materialized views.
+The runnable app targets **Python 3.12** and **Django 4.2**. That is the last LTS whose ORM APIs still match the book (`select_related`, `prefetch_related`, `iterator`, `JSONField`, GIN indexes, concurrent index operations) without rewriting the listings.
 
-## Setup
+Django 3.0 (the original pin) does not install on Apple Silicon and does not run against Postgres 15+.
 
-This project uses Docker to set up its environment, and it includes a Makefile to let you run `docker-compose` commands more easily.
+## Setup (Docker)
 
-### Initial Setup
+Docker is the default. Postgres, Redis, and Django run as Compose services. This is also the path later updates will use when the profiling chapter grows a local Grafana and OpenTelemetry stack.
 
-Run `make build` to build the images for the environment.
+From this directory:
 
-You'll also want to run `docker-compose run web ./manage.py createsuperuser` to create a superuser for yourself.
+    make build
+    make dev          # http://127.0.0.1:8000/
+    make test
+    make superuser
 
-### Dev Server
+If port 8000 is already taken:
 
-Run `make dev` to run Redis, Postgres, and the Django web application. The example's servers bind their ports to localhost, so you can visit the app at https://localhost:8000 once it's running.
+    QUEST_WEB_PORT=8001 make dev
 
-## Viewing Logs
+Postgres is published on host port 15432 (`psql -h 127.0.0.1 -p 15432 -U quest`). Redis stays on the Compose network so it does not collide with a host `redis-server`.
 
-Run `docker-compose logs web` to view logs for the web application. Likewise, 'postgres' and 'redis' will show logs for those servers.
+    make logs         # follow Django
+    make down         # stop the stack
+    make generate-events NUM=500000 USER_ID=1
 
-## Running Tests
+Frontend asset watch is opt-in: `docker compose --profile frontend up`.
 
-Run `make test` to run the tests. Tests run in a container. If you drop in "import ipdb; ipdb.set_trace()" anywhere in the project code, you'll drop into a debugging session if the tests hit that code.
+## Without Docker
 
-## Generating Data for Performance Problems
+Postgres 16 and Redis on the host, plus a Python 3.12 venv. On macOS:
 
-Recreating many of the performance problems in this book requires a large amount of data in your database. This project includes a management command that will generate analytics events sufficient to cause performance problems.
+    brew install postgresql@16 redis
+    brew services start postgresql@16
+    brew services start redis
 
-Here's an example of using the management command to generate 500,000 analytics events for the user with
-ID 1 (in my case, this is my admin user):
+If `brew services` does not listen:
 
-    $ docker-compose run web ./manage.py generate_events --num 500000 --user-id 1
+    pg_ctl -D /opt/homebrew/var/postgresql@16 start
+    redis-server --daemonize yes
+
+Then:
+
+    make local-setup    # .venv, role/database `quest` / password `test`, migrate
+    make local-test
+    make local-run      # http://127.0.0.1:8000/  (PORT=8001 if needed)
+    make local-superuser
+
+## The N+1 demo
+
+`GET /analytics` is intentionally N+1 (`Event.objects.all()`, template walks `event.user.profile.account`). `GET /analytics_select_related` is the book's fix. Do not add `select_related` to `all_events` or the chapter demo disappears.
+
+## Weather annotation
+
+`process_events` writes hourly cloud cover from [Open-Meteo](https://open-meteo.com/en/docs/historical-weather-api). No API key.
+
+`generate_events` does not add coordinates (a 500k run plus weather would blow the free 10,000 calls/day cap). For a small weather demo, with the Compose stack up:
+
+    docker compose exec web python manage.py generate_events --num 5 --user-id 1 --with-location
+    docker compose exec web python manage.py process_events
+
+## Generating data for performance problems
+
+    make generate-events NUM=500000 USER_ID=1
+
+`USER_ID` is a Django user id (your superuser is usually `1`). The web container must already be running (`make dev`).
 
 ## Copyright
 
-This example code is copyright 2020 Andrew Brookins.
+This example code is copyright 2020–2026 Andrew Brookins.

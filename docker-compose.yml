@@ -1,51 +1,76 @@
-version: "3.8"
+# Default stack for Quest. Grafana / OpenTelemetry will join this file later.
+# Redis is not published to the host, so a local redis-server on :6379 does not clash.
 
 services:
   db:
-    image: postgres:12
-    restart: always
-    ports:
-      - "15432:5432"
+    image: postgres:16
     environment:
       POSTGRES_USER: quest
       POSTGRES_PASSWORD: test
       POSTGRES_DB: quest
+    ports:
+      - "${QUEST_DB_PORT:-15432}:5432"
     volumes:
-        - ./postgres-data:/var/lib/postgresql/data
+      - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U quest -d quest"]
+      interval: 2s
+      timeout: 5s
+      retries: 15
 
   redis:
-    image: redis:latest
-    ports:
-      - "6379:6379"
-    expose:
-      - "6379"
+    image: redis:7-alpine
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 2s
+      timeout: 3s
+      retries: 10
 
   web:
     build: .
     ports:
-      - "8000:8000"
-    command: "make runserver"
-    working_dir: /usr/src/app
+      - "${QUEST_WEB_PORT:-8000}:8000"
+    command:
+      - /bin/sh
+      - -c
+      - python manage.py migrate && python manage.py runserver 0.0.0.0:8000
     environment:
       QUEST_DATABASE_HOST: db
-      QUEST_REDIS_URL: "redis://redis:6379/0"
+      QUEST_DATABASE_PASSWORD: test
+      QUEST_REDIS_URL: redis://redis:6379/0
+      PYTHONUNBUFFERED: "1"
     depends_on:
-      - "db"
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
     volumes:
-      - ".:/usr/src/app"
-
-  static:
-    image: node:latest
-    command: "make watch_static"
-    working_dir: /usr/src/app
-    volumes:
-      - ".:/usr/src/app"
+      - .:/usr/src/app
 
   test:
     build: .
+    profiles: ["test"]
+    command: pytest
     environment:
       QUEST_DATABASE_HOST: db
-      QUEST_REDIS_URL: "redis://redis:6379/0"
-    working_dir: /usr/src/app
+      QUEST_DATABASE_PASSWORD: test
+      QUEST_REDIS_URL: redis://redis:6379/0
+      PYTHONUNBUFFERED: "1"
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
     volumes:
-      - ".:/usr/src/app"
+      - .:/usr/src/app
+
+  static:
+    profiles: ["frontend"]
+    image: node:22-alpine
+    working_dir: /usr/src/app
+    command: ["sh", "-c", "npm install && npm run watch"]
+    volumes:
+      - .:/usr/src/app
+
+volumes:
+  postgres-data:

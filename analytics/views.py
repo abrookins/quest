@@ -21,7 +21,11 @@ log = logging.getLogger(__name__)
 
 @login_required
 def all_events(request):
-    """Render the list of analytics events."""
+    """Render the list of analytics events.
+
+    Intentionally N+1: the template walks user/profile/account. The
+    book's fix is events_select_related.
+    """
     events = Event.objects.all()
     context = {'events': events}
     return render(request, "analytics/events.html", context)
@@ -96,7 +100,7 @@ def decode_keyset(keyset):
         raise KeysetError
     try:
         created_at = datetime.datetime.fromtimestamp(
-            float(created_at_timestamp))
+            float(created_at_timestamp), tz=datetime.timezone.utc)
     except (ValueError, OverflowError):
         log.debug("Could not parse created_at timestamp "
                   "from keyset: %s", created_at_timestamp)

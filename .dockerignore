@@ -1,1 +1,7 @@
+.venv
 postgres-data
+__pycache__
+.git
+.pytest_cache
+node_modules
+*.pyc
